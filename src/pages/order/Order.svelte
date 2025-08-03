@@ -1,48 +1,47 @@
-<script>
+<!-- <script>
     import PageLayout from "../../components/layout/PageLayout.svelte";
-    import CampaignTable from "../../components/tables/orders/CampaignTable.svelte";
+    import OrderTable from "../../components/tables/orders/OrderTable.svelte";
     import Modal from "../../components/ui/Modal.svelte";
-    import CampaignForm from "../../components/forms/orders/CampaignForm.svelte";
-    import { campaignUseCase } from "../../../usecases/orders/campaign";
+    import OrderForm from "../../components/forms/orders/OrderForm.svelte";
+    import { orderUseCase } from "../../../usecases/orders/order";
 
     const {
-        filteredCampaigns,
+        filteredOrders,
         form,
         modal,
         openAdd,
         openEdit,
-        deleteItem: deleteCampaign,
+        deleteItem: deleteOrder,
         confirmDelete,
         handleSubmit,
         closeModal,
         search,
         updateSearch,
-    } = campaignUseCase();
+    } = orderUseCase();
 </script>
 
 <PageLayout
-    title="Campaign"
-    icon="📢"
+    title="All Orders"
+    icon="📄"
     bind:searchText={$search}
     onSearchChange={updateSearch}
     onAdd={openAdd}
 >
     <div class="px-6">
-        <CampaignTable
-            campaigns={$filteredCampaigns}
+        <OrderTable
+            orders={$filteredOrders}
             onEdit={openEdit}
-            onDelete={deleteCampaign}
+            onDelete={deleteOrder}
         />
     </div>
 </PageLayout>
 
-<!-- Modal Add/Edit -->
 {#if $modal.show && ($modal.type === "add" || $modal.type === "edit")}
     <Modal
-        title={$modal.type === "add" ? "Add Campaign" : "Edit Campaign"}
+        title={$modal.type === "add" ? "Add Order" : "Edit Order"}
         onClose={closeModal}
     >
-        <CampaignForm
+        <OrderForm
             bind:form={$form}
             onCancel={closeModal}
             onSubmit={handleSubmit}
@@ -50,11 +49,10 @@
     </Modal>
 {/if}
 
-<!-- Modal Delete -->
 {#if $modal.show && $modal.type === "delete"}
-    <Modal title="Delete Campaign" onClose={closeModal}>
+    <Modal title="Delete Order" onClose={closeModal}>
         <div class="text-sm text-gray-700">
-            Are you sure you want to delete this campaign?
+            Are you sure you want to delete this order?
         </div>
         <div class="flex justify-end gap-2 mt-4">
             <button
@@ -71,4 +69,4 @@
             </button>
         </div>
     </Modal>
-{/if}
+{/if} -->

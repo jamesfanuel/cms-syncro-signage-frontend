@@ -1,18 +1,18 @@
 <script>
     import { createEventDispatcher } from "svelte";
-    export let formations = [];
+    export let campaigns = [];
 
     const dispatch = createEventDispatcher();
 
-    function handleEdit(formation) {
-        dispatch("edit", formation);
+    function handleEdit(campaign) {
+        dispatch("edit", campaign);
     }
 
-    function handleDelete(formation) {
+    function handleDelete(campaign) {
         if (
-            confirm(`Are you sure you want to delete "${formation.screen_name}"?`)
+            confirm(`Are you sure you want to delete "${campaign.campaign_name}"?`)
         ) {
-            dispatch("delete", { id: formation.screen_id });
+            dispatch("delete", { id: campaign.campaign_id });
         }
     }
 </script>
@@ -23,16 +23,16 @@
     <thead class="bg-gray-100 text-gray-700">
         <tr>
             <th class="px-4 py-2 text-left">
-                <i class="fas fa-handshake mr-1 text-[#5E6B75]"></i> Outlet Name
+                <i class="fas fa-handshake mr-1 text-[#5E6B75]"></i> Campaign Name
             </th>
             <th class="px-4 py-2 text-left">
-                <i class="fas fa-handshake mr-1 text-[#5E6B75]"></i> Screen Name
+                <i class="fas fa-handshake mr-1 text-[#5E6B75]"></i> Client Name
             </th>
             <th class="px-4 py-2 text-left">
-                <i class="fas fa-handshake mr-1 text-[#5E6B75]"></i> Screen Description
+                <i class="fas fa-handshake mr-1 text-[#5E6B75]"></i> Start Date
             </th>
             <th class="px-4 py-2 text-left">
-                <i class="fas fa-handshake mr-1 text-[#5E6B75]"></i> Screen Function
+                <i class="fas fa-handshake mr-1 text-[#5E6B75]"></i> End Date
             </th>
             <th class="px-4 py-2 text-left">
                 <i class="fas fa-user mr-1 text-[#5E6B75]"></i> Created By
@@ -47,28 +47,28 @@
     </thead>
 
     <tbody>
-        {#each formations as formation, index}
+        {#each campaigns as campaign, index}
             <tr
                 class="hover:bg-gray-50 border-t transition duration-150 ease-in-out"
             >
-                <td class="px-4 py-2">{formation.outlet_name}</td>
-                <td class="px-4 py-2">{formation.screen_name}</td>
-                <td class="px-4 py-2">{formation.screen_description}</td>
-                <td class="px-4 py-2">{formation.screen_function}</td>
-                <td class="px-4 py-2">{formation.created_by}</td>
-                <td class="px-4 py-2">{formation.created_at}</td>
+                <td class="px-4 py-2">{campaign.campaign_name}</td>
+                <td class="px-4 py-2">{campaign.client_name}</td>
+                <td class="px-4 py-2">{campaign.start_date}</td>
+                <td class="px-4 py-2">{campaign.end_date}</td>
+                <td class="px-4 py-2">{campaign.created_by}</td>
+                <td class="px-4 py-2">{campaign.created_at}</td>
                 <td class="px-4 py-2">
                     <div class="flex space-x-2">
                         <button
                             class="text-blue-500 hover:text-blue-700 transition"
-                            on:click={() => handleEdit(formation)}
+                            on:click={() => handleEdit(campaign)}
                             title="Edit"
                         >
                             <i class="fas fa-edit"></i>
                         </button>
                         <button
                             class="text-red-500 hover:text-red-700 transition"
-                            on:click={() => handleDelete(formation)}
+                            on:click={() => handleDelete(campaign)}
                             title="Delete"
                         >
                             <i class="fas fa-trash-alt"></i>

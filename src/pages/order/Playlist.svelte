@@ -1,47 +1,48 @@
+<!-- src/pages/orders/Playlist.svelte
 <script>
     import PageLayout from "../../components/layout/PageLayout.svelte";
-    import OrderTable from "../../components/tables/orders/OrderTable.svelte";
+    import PlaylistTable from "../../components/tables/orders/PlaylistTable.svelte";
     import Modal from "../../components/ui/Modal.svelte";
-    import OrderForm from "../../components/forms/orders/OrderForm.svelte";
-    import { orderUseCase } from "../../../usecases/orders/order";
+    import PlaylistForm from "../../components/forms/orders/PlaylistForm.svelte";
+    import { playlistUseCase } from "../../../usecases/orders/playlist";
 
     const {
-        filteredOrders,
+        filteredPlaylists,
         form,
         modal,
         openAdd,
         openEdit,
-        deleteItem: deleteOrder,
+        deleteItem: deletePlaylist,
         confirmDelete,
         handleSubmit,
         closeModal,
         search,
         updateSearch,
-    } = orderUseCase();
+    } = playlistUseCase();
 </script>
 
 <PageLayout
-    title="All Orders"
-    icon="📄"
+    title="Playlist"
+    icon="🎞️"
     bind:searchText={$search}
     onSearchChange={updateSearch}
     onAdd={openAdd}
 >
     <div class="px-6">
-        <OrderTable
-            orders={$filteredOrders}
+        <PlaylistTable
+            playlists={$filteredPlaylists}
             onEdit={openEdit}
-            onDelete={deleteOrder}
+            onDelete={deletePlaylist}
         />
     </div>
 </PageLayout>
 
 {#if $modal.show && ($modal.type === "add" || $modal.type === "edit")}
     <Modal
-        title={$modal.type === "add" ? "Add Order" : "Edit Order"}
+        title={$modal.type === "add" ? "Add Playlist" : "Edit Playlist"}
         onClose={closeModal}
     >
-        <OrderForm
+        <PlaylistForm
             bind:form={$form}
             onCancel={closeModal}
             onSubmit={handleSubmit}
@@ -50,23 +51,18 @@
 {/if}
 
 {#if $modal.show && $modal.type === "delete"}
-    <Modal title="Delete Order" onClose={closeModal}>
+    <Modal title="Delete Playlist" onClose={closeModal}>
         <div class="text-sm text-gray-700">
-            Are you sure you want to delete this order?
+            Are you sure you want to delete this playlist?
         </div>
         <div class="flex justify-end gap-2 mt-4">
-            <button
-                class="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100"
-                on:click={closeModal}
+            <button class="px-4 py-2 border rounded" on:click={closeModal}
+                >Cancel</button
             >
-                Cancel
-            </button>
             <button
-                class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                on:click={confirmDelete}
+                class="px-4 py-2 bg-red-600 text-white rounded"
+                on:click={confirmDelete}>Delete</button
             >
-                Delete
-            </button>
         </div>
     </Modal>
-{/if}
+{/if} -->

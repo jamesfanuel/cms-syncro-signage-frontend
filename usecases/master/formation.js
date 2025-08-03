@@ -1,24 +1,32 @@
-// src/lib/usecases/formation.js
-import { createMasterUseCase } from "../helpers/createMasterUseCase";
+// src/usecases/configuration/formation.js
 
-const initialFormations = [
-    { code: "TV001", name: "TV Lobby Utama", location: "Lantai 1", client: "PT JAYA MAKMUR" },
-    { code: "TV002", name: "TV Resepsionis", location: "Lantai 2", client: "JAYA TERUS" },
-    { code: "TV003", name: "TV Kantor Pusat", location: "Lantai 5", client: "GLOBAL MEDIA" },
-];
+import {
+    formationListRequest,
+    formationCreateRequest,
+    formationUpdateRequest,
+    formationDeleteRequest
+} from '../../src/api/master/formation';
 
-const defaultForm = { code: "", name: "", location: "", client: "" };
+/** Ambil list formation */
+export async function fetchFormations(customer_id) {
+    const json = await formationListRequest(customer_id);
+    return json.data;
+}
 
-export const formationUseCase = () => {
-    const {
-        items,
-        filteredItems,
-        ...rest
-    } = createMasterUseCase(initialFormations, defaultForm);
+/** Tambah formation */
+export async function createFormation(data) {
+    const res = await formationCreateRequest(data);
+    return await res.json();
+}
 
-    return {
-        tvs: items,              // raw data
-        filteredTVs: filteredItems, // for filtered search
-        ...rest
-    };
-};
+/** Update formation */
+export async function updateFormation(id, data) {
+    const res = await formationUpdateRequest(id, data);
+    return await res.json();
+}
+
+/** Hapus formation */
+export async function deleteFormation(id) {
+    const res = await formationDeleteRequest(id);
+    return await res.json();
+}

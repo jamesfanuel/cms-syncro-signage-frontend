@@ -111,6 +111,7 @@
 
     clients = await fetchClients(Number(customerId));
   }
+  
   async function loadCategories() {
     const customerId = localStorage.getItem("customer_id");
     if (!customerId) {

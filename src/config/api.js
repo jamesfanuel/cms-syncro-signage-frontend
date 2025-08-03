@@ -49,5 +49,26 @@ export const API_ENDPOINTS = {
         delete: (id) => `${BASE_URL}/product/version/delete/${id}`,
         upload: (id) => `${BASE_URL}/product/version/${id}/upload`,
     },
+    outlet: {
+        find: (customer_id) => `${BASE_URL}/customer/${customer_id}/outlets`,
+        findById: (id) => `${BASE_URL}/outlet/get/${id}`,
+        create: `${BASE_URL}/outlet/create`,
+        update: (id) => `${BASE_URL}/outlet/update/${id}`,
+        delete: (id) => `${BASE_URL}/outlet/delete/${id}`,
+    },
+    formation: {
+        find: (customer_id) => `${BASE_URL}/customer/${customer_id}/formations`,
+        findById: (id) => `${BASE_URL}/formation/get/${id}`,
+        create: `${BASE_URL}/formation/create`,
+        update: (id) => `${BASE_URL}/formation/update/${id}`,
+        delete: (id) => `${BASE_URL}/formation/delete/${id}`,
+    },
+    campaign: {
+        find: (customer_id) => `${BASE_URL}/customer/${customer_id}/campaigns`,
+        findById: (id) => `${BASE_URL}/campaign/get/${id}`,
+        create: `${BASE_URL}/campaign/create`,
+        update: (id) => `${BASE_URL}/campaign/update/${id}`,
+        delete: (id) => `${BASE_URL}/campaign/delete/${id}`,
+    },
 };
 

@@ -1,40 +1,32 @@
-import { createMasterUseCase } from "../helpers/createMasterUseCase";
+// src/usecases/master/outlet.js
 
-const initialOutlets = [
-    {
-        code: "O001",
-        name: "Outlet Utama",
-        address: "Jl. Jendral Sudirman No.12",
-        city: "Jakarta",
-        client: "PT JAYA MAKMUR"
-    },
-    {
-        code: "O002",
-        name: "Outlet Ruko Margonda",
-        address: "Jl. Margonda Raya No.88",
-        city: "Depok",
-        client: "JAYA TERUS"
-    }
-];
+import {
+    outletListRequest,
+    outletCreateRequest,
+    outletUpdateRequest,
+    outletDeleteRequest
+} from '../../src/api/master/outlet';
 
-const defaultForm = {
-    code: "",
-    name: "",
-    address: "",
-    city: "",
-    client: ""
-};
+/** Ambil list outlet */
+export async function fetchOutlets(customer_id) {
+    const json = await outletListRequest(customer_id);
+    return json.data;
+}
 
-export const outletUseCase = () => {
-    const {
-        items,
-        filteredItems,
-        ...rest
-    } = createMasterUseCase(initialOutlets, defaultForm);
+/** Tambah outlet */
+export async function createOutlet(data) {
+    const res = await outletCreateRequest(data);
+    return await res.json();
+}
 
-    return {
-        outlets: items,              // raw data
-        filteredOutlets: filteredItems, // for filtered search
-        ...rest
-    };
-};
+/** Update outlet */
+export async function updateOutlet(id, data) {
+    const res = await outletUpdateRequest(id, data);
+    return await res.json();
+}
+
+/** Hapus outlet */
+export async function deleteOutlet(id) {
+    const res = await outletDeleteRequest(id);
+    return await res.json();
+}

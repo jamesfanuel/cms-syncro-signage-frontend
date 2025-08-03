@@ -12,9 +12,9 @@
   import ProductVersion from "./pages/master/product/ProductVersion.svelte";
   import TVFormation from "./pages/master/Formation.svelte";
   import OutletTV from "./pages/master/Outlet.svelte";
-  import Campaign from "./pages/orders/Campaign.svelte";
-  import AllOrders from "./pages/orders/AllOrder.svelte";
-  import Playlist from "./pages/orders/Playlist.svelte";
+  import Campaign from "./pages/order/Campaign.svelte";
+  import Order from "./pages/order/Order.svelte";
+  import Playlist from "./pages/order/Playlist.svelte";
   import LoginPage from "./pages/LoginPage.svelte";
   import VideoUploader from "./pages/VideoUploader.svelte";
   import Customer from "./pages/configuration/Customer.svelte";
@@ -84,7 +84,7 @@
     {:else if selectedMenu === "campaign" && $auth.userRole !== "admin"}
       <Campaign />
     {:else if selectedMenu === "orders" && $auth.userRole !== "admin"}
-      <AllOrders />
+      <Order />
     {:else if selectedMenu === "playlist" && $auth.userRole !== "admin"}
       <Playlist />
     {:else if selectedMenu === "upload" && $auth.userRole !== "admin"}

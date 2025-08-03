@@ -2,7 +2,6 @@
     import { createEventDispatcher, onMount } from "svelte";
 
     export let selectedItem = null;
-    console.log("selectedItem", selectedItem);
 
     const dispatch = createEventDispatcher();
     const currentUser = localStorage.getItem("user_name");

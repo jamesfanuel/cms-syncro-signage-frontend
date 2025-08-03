@@ -146,30 +146,20 @@
             </li>
             <li>
               <button
+                on:click={() => select("orders")}
+                class={`w-full text-left px-2 py-1 rounded hover:bg-gray-200 ${isActive("orders")}`}
+                >📋 Order</button
+              >
+            </li>
+            <li>
+              <button
                 on:click={() => select("playlist")}
                 class={`w-full text-left px-2 py-1 rounded hover:bg-gray-200 ${isActive("playlist")}`}
                 >🎵 Playlist</button
               >
             </li>
-            <li>
-              <button
-                on:click={() => select("orders")}
-                class={`w-full text-left px-2 py-1 rounded hover:bg-gray-200 ${isActive("orders")}`}
-                >📋 All Orders</button
-              >
-            </li>
           </ul>
         {/if}
-      </div>
-
-      <!-- Upload -->
-      <div class="mt-4">
-        <button
-          on:click={() => select("upload")}
-          class={`w-full text-left px-3 py-2 font-semibold rounded hover:bg-gray-200 ${isActive("upload")}`}
-        >
-          📤 Upload File
-        </button>
       </div>
     {/if}
 
