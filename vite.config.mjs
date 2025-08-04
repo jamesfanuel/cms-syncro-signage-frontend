@@ -14,9 +14,9 @@ export default defineConfig(({ mode }) => {
         '/api': {
           target: isProduction
             ? 'https://syncrosignage.com'
-            : 'http://192.168.18.64:8000',
+            : 'http://192.168.210.86:8000',
           changeOrigin: true,
-          // secure: false,
+          secure: false,
         },
       },
     },

@@ -1,37 +1,62 @@
-// use_case/orders/order.js
-import { createMasterUseCase } from "../helpers/createMasterUseCase";
+// src/usecases/order/order.js
 
-const initialOrders = [
-    {
-        id: "ORD001",
-        client: "PT JAYA MAKMUR",
-        startDate: "2025-07-01",
-        endDate: "2025-07-15",
-        status: "Active",
-    },
-    {
-        id: "ORD002",
-        client: "JAYA TERUS",
-        startDate: "2025-07-05",
-        endDate: "2025-07-20",
-        status: "Scheduled",
-    },
-];
+import {
+    orderListRequest,
+    orderCreateRequest,
+    orderUpdateRequest,
+    orderDeleteRequest,
+    orderItemListRequest,
+    orderItemCreateRequest,
+    orderItemUpdateRequest,
+    orderItemDeleteRequest
+} from '../../src/api/order/order';
 
-const defaultForm = {
-    id: "",
-    client: "",
-    startDate: "",
-    endDate: "",
-    status: "",
-};
+/** Ambil list order */
+export async function fetchOrders(customer_id) {
+    const json = await orderListRequest(customer_id);
+    return json.data;
+}
 
-export const orderUseCase = () => {
-    const { items, filteredItems, ...rest } = createMasterUseCase(initialOrders, defaultForm);
+/** Tambah order */
+export async function createOrder(data) {
+    const res = await orderCreateRequest(data);
+    return await res.json();
+}
 
-    return {
-        orders: items,
-        filteredOrders: filteredItems,
-        ...rest,
-    };
-};
+/** Update order */
+export async function updateOrder(id, data) {
+    const res = await orderUpdateRequest(id, data);
+    return await res.json();
+}
+
+/** Hapus order */
+export async function deleteOrder(id) {
+    const res = await orderDeleteRequest(id);
+    return await res.json();
+}
+
+///////////////
+
+/** Ambil list order */
+export async function fetchOrderItems(customer_id, order_id) {
+    const json = await orderItemListRequest(customer_id, order_id);
+    return json.data;
+}
+
+/** Tambah order */
+export async function createOrderItem(data) {
+    const res = await orderItemCreateRequest(data);
+    return await res.json();
+}
+
+/** Update order */
+export async function updateOrderItem(id, data) {
+    const res = await orderItemUpdateRequest(id, data);
+    return await res.json();
+}
+
+/** Hapus order */
+export async function deleteOrderItem(id) {
+    const res = await orderItemDeleteRequest(id);
+    return await res.json();
+}

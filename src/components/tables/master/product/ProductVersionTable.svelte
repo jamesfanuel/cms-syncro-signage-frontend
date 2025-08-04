@@ -1,6 +1,7 @@
 <script>
     import { createEventDispatcher } from "svelte";
     export let productVersions = [];
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     let showModal = false;
     let previewPath = "";
@@ -43,6 +44,9 @@
         <thead class="bg-gray-100 text-gray-700 whitespace-nowrap">
             <tr>
                 <th class="px-4 py-2 text-left">
+                    <i class="fas fa-clock mr-1 text-[#5E6B75]"></i> Preview
+                </th>
+                <th class="px-4 py-2 text-left">
                     <i class="fas fa-layer-group mr-1 text-[#5E6B75]"></i> Version
                     Name
                 </th>
@@ -67,9 +71,6 @@
                     <i class="fas fa-clock mr-1 text-[#5E6B75]"></i> Duration
                 </th>
                 <th class="px-4 py-2 text-left">
-                    <i class="fas fa-clock mr-1 text-[#5E6B75]"></i> Preview
-                </th>
-                <th class="px-4 py-2 text-left">
                     <i class="fas fa-user mr-1 text-[#5E6B75]"></i> Created By
                 </th>
                 <th class="px-4 py-2 text-left">
@@ -90,6 +91,21 @@
                             : ""
                     }`}
                 >
+                    <td class="px-4 py-2">
+                        {#if productVersion.file_path}
+                            <button
+                                class="text-blue-600 hover:underline"
+                                on:click={() =>
+                                    openPreviewModal(
+                                        `${baseUrl}${productVersion.file_path}`,
+                                    )}
+                            >
+                                Preview
+                            </button>
+                        {:else}
+                            <span class="text-gray-400 italic">No file</span>
+                        {/if}
+                    </td>
                     <td class="px-4 py-2">{productVersion.version_name}</td>
                     <td class="px-4 py-2">{productVersion.product_name}</td>
                     <td class="px-4 py-2">{productVersion.resolution}</td>
@@ -97,18 +113,7 @@
                     <td class="px-4 py-2">{productVersion.file_name}</td>
                     <td class="px-4 py-2">{productVersion.file_size}</td>
                     <td class="px-4 py-2">{productVersion.duration}</td>
-                    <td class="px-4 py-2">
-                        {#if productVersion.file_path}
-                            <button
-                                class="text-blue-600 hover:underline"
-                                on:click={() => openPreviewModal(productVersion.file_path)}
-                            >
-                                Preview
-                            </button>
-                        {:else}
-                            <span class="text-gray-400 italic">No file</span>
-                        {/if}
-                    </td>                    
+
                     <td class="px-4 py-2">{productVersion.created_by}</td>
                     <td class="px-4 py-2">{productVersion.created_at}</td>
                     <td class="px-4 py-2">
@@ -152,8 +157,12 @@
 </div>
 
 {#if showModal}
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white p-6 rounded-lg shadow-lg max-w-3xl w-full relative">
+    <div
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+        <div
+            class="bg-white p-6 rounded-lg shadow-lg max-w-3xl w-full relative"
+        >
             <button
                 class="absolute top-2 right-2 text-gray-600 hover:text-black"
                 on:click={closeModal}
@@ -161,13 +170,10 @@
             >
                 ✖
             </button>
-            <h2 class="text-lg font-semibold mb-4 text-gray-800">Preview Video</h2>
-            <video
-                src={previewPath}
-                controls
-                autoplay
-                class="w-full rounded"
-            >
+            <h2 class="text-lg font-semibold mb-4 text-gray-800">
+                Preview Video
+            </h2>
+            <video src={previewPath} controls autoplay class="w-full rounded">
                 Your browser does not support the video tag.
             </video>
         </div>

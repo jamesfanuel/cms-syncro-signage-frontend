@@ -70,5 +70,19 @@ export const API_ENDPOINTS = {
         update: (id) => `${BASE_URL}/campaign/update/${id}`,
         delete: (id) => `${BASE_URL}/campaign/delete/${id}`,
     },
+    order: {
+        find: (customer_id) => `${BASE_URL}/customer/${customer_id}/orders`,
+        findById: (id) => `${BASE_URL}/order/get/${id}`,
+        create: `${BASE_URL}/order/create`,
+        update: (id) => `${BASE_URL}/order/update/${id}`,
+        delete: (id) => `${BASE_URL}/order/delete/${id}`,
+    },
+    orderItem: {
+        find: (customer_id, order_id) => `${BASE_URL}/customer/${customer_id}/orders/${order_id}/items`,
+        findById: (id) => `${BASE_URL}/order/item/get/${id}`,
+        create: `${BASE_URL}/order/item/create`,
+        update: (id) => `${BASE_URL}/order/item/update/${id}`,
+        delete: (id) => `${BASE_URL}/order/item/delete/${id}`,
+    },
 };
 

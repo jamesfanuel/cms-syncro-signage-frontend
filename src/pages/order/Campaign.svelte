@@ -52,7 +52,7 @@
     filteredCampaigns = campaigns.filter(
       (c) =>
         c.client_name?.toLowerCase().includes(q) ||
-        c.campaign_name?.toLowerCase().includes(q)
+        c.campaign_name?.toLowerCase().includes(q),
     );
   }
 
@@ -96,7 +96,7 @@
     isOpen = false;
   }
 
-  async function loadOutlets() {
+  async function loadClients() {
     const customerId = localStorage.getItem("customer_id");
     if (!customerId) {
       console.warn("customer_id not found in localStorage");
@@ -112,7 +112,7 @@
 
   onMount(() => {
     loadCampaigns();
-    loadOutlets();
+    loadClients();
   });
 </script>
 
