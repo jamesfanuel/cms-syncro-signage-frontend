@@ -20,7 +20,10 @@
     };
 
     // Reaktif terhadap perubahan selectedFormation
-    $: if (selectedFormation && selectedFormation.screen_id !== formData.screen_id) {
+    $: if (
+        selectedFormation &&
+        selectedFormation.screen_id !== formData.screen_id
+    ) {
         formData = {
             screen_id: selectedFormation.screen_id,
             outlet_id: selectedFormation.outlet_id,
@@ -84,11 +87,14 @@
     </div>
     <div>
         <label class="block text-sm mb-1 font-medium">Screen Function</label>
-        <input
-            type="text"
+        <select
+            class="w-full px-3 py-2 border rounded"
             bind:value={formData.screen_function}
-            class="w-full border px-3 py-2 rounded"
-        />
+        >
+            <option value="" disabled>Pilih Screen Function</option>
+            <option value="menu"> Menu </option>
+            <option value="iklan"> Iklan </option>
+        </select>
     </div>
 
     <div class="flex justify-end gap-2 mt-4">

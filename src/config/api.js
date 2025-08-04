@@ -59,6 +59,7 @@ export const API_ENDPOINTS = {
     formation: {
         find: (customer_id) => `${BASE_URL}/customer/${customer_id}/formations`,
         findById: (id) => `${BASE_URL}/formation/get/${id}`,
+        findByOutlet: (outlet_id) => `${BASE_URL}/outlet/${outlet_id}/formations`,
         create: `${BASE_URL}/formation/create`,
         update: (id) => `${BASE_URL}/formation/update/${id}`,
         delete: (id) => `${BASE_URL}/formation/delete/${id}`,

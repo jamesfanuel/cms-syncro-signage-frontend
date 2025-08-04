@@ -19,7 +19,6 @@
 
     import { fetchCampaigns } from "../../../usecases/order/campaign.js";
     import { fetchOutlets } from "../../../usecases/master/outlet.js";
-    import { fetchFormations } from "../../../usecases/master/formation.js";
     import { fetchProductVersions } from "../../../usecases/master/product.js";
 
     let orders = [];
@@ -86,7 +85,6 @@
         selectedOrderItem = null;
         isOpenItem = true;
         loadOutlets();
-        loadScreens();
         loadVersions();
     }
 
@@ -154,17 +152,6 @@
         outlets = await fetchOutlets(Number(customerId));
     }
 
-    let screens = [];
-    async function loadScreens() {
-        const customerId = localStorage.getItem("customer_id");
-        if (!customerId) {
-            console.warn("customer_id not found in localStorage");
-            return;
-        }
-
-        screens = await fetchFormations(Number(customerId));
-    }
-
     let versions = [];
     async function loadVersions() {
         const customerId = localStorage.getItem("customer_id");
@@ -204,6 +191,7 @@
             on:edit={(e) => openEditForm(e.detail)}
             on:delete={handleDelete}
             on:addItem={(e) => openAddItemForm(e.detail)}
+            on:reload={loadOrders}
         />
     </div>
 
@@ -224,14 +212,13 @@
     {#if isOpenItem}
         <Modal
             title={selectedOrderItem ? "Edit Order Item" : "Add Order Item"}
-            onClose={handleCloseForm}
+            onClose={handleItemCloseForm}
         >
             <OrderItemForm
                 {selectedOrder}
                 {selectedOrderItem}
                 {versions}
                 {outlets}
-                {screens}
                 on:edit={(e) => openEditItemForm(e.detail)}
                 on:submit={(e) => handleItemFormSubmit(e.detail)}
                 on:close={handleItemCloseForm}

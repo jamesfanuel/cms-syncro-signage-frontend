@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher } from "svelte";
+    import { fetchFormationsByOutlet } from "../../../../usecases/master/formation.js";
 
     export let selectedOrder = null;
     export let selectedOrderItem = null;
@@ -10,7 +11,9 @@
 
     export let versions = [];
     export let outlets = [];
-    export let screens = [];
+    let screens = [];
+    let selectedOutletId = "";
+    let filteredScreens = [];
 
     let formData = {
         version_id: null,
@@ -67,6 +70,27 @@
     function handleClose() {
         dispatch("close");
     }
+
+    async function handleOutletChange() {
+        // Set formData values
+        formData.outlet_id = selectedOutletId;
+        formData.screen_id = "";
+
+        // Fetch formations based on selected outlet
+        try {
+            screens = await fetchFormationsByOutlet(+selectedOutletId);
+            console.log("Formations:", screens);
+
+            // Baru filter setelah data diperbarui
+            filteredScreens = screens.filter(
+                (screen) => screen.outlet_id == selectedOutletId,
+            );
+
+            console.log("Filtered Screens:", filteredScreens);
+        } catch (error) {
+            console.error("Failed to fetch formations:", error);
+        }
+    }
 </script>
 
 <div class="space-y-4">
@@ -89,9 +113,10 @@
         <label class="block text-sm mb-1 font-medium">Outlet Name</label>
         <select
             class="w-full px-3 py-2 border rounded"
-            bind:value={formData.outlet_id}
+            bind:value={selectedOutletId}
+            on:change={handleOutletChange}
         >
-            <option value="" disabled>Pilih Outlet</option>
+            <option value="" disabled selected>Pilih Outlet</option>
             {#each outlets as outlet}
                 <option value={+outlet.outlet_id}>
                     {outlet.outlet_name}
@@ -138,8 +163,8 @@
             bind:value={formData.screen_id}
         >
             <option value="" disabled>Pilih Screen</option>
-            {#each screens as screen}
-                <option value={+screen.screen_id}>
+            {#each filteredScreens as screen}
+                <option value={screen.screen_id}>
                     {screen.screen_name}
                 </option>
             {/each}

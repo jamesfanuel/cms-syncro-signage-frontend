@@ -28,3 +28,9 @@ export function formationDeleteRequest(id) {
         method: 'DELETE'
     });
 }
+
+export async function formationListByOutletRequest(outlet_id) {
+    const response = await fetch(API_ENDPOINTS.formation.findByOutlet(outlet_id));
+    if (!response.ok) throw new Error('Gagal fetch data formation');
+    return await response.json();
+}

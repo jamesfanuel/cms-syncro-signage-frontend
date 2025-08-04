@@ -2,6 +2,7 @@
     import { Building2, CalendarDays, MonitorPlay } from "lucide-svelte";
     import { createEventDispatcher } from "svelte";
     export let orders = [];
+    export let onReload;
 
     import { deleteOrderItem } from "../../../../usecases/order/order.js";
 
@@ -33,6 +34,7 @@
             selectedItems = selectedItems.filter(
                 (item) => item.order_item_id !== orderItemId,
             );
+            dispatch("reload");
         } catch (error) {
             console.error("Failed to delete order item:", error);
             alert("Failed to delete order item.");

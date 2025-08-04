@@ -2,6 +2,7 @@
 
 import {
     formationListRequest,
+    formationListByOutletRequest,
     formationCreateRequest,
     formationUpdateRequest,
     formationDeleteRequest
@@ -29,4 +30,9 @@ export async function updateFormation(id, data) {
 export async function deleteFormation(id) {
     const res = await formationDeleteRequest(id);
     return await res.json();
+}
+
+export async function fetchFormationsByOutlet(outlet_id) {
+    const json = await formationListByOutletRequest(outlet_id);
+    return json.data;
 }
