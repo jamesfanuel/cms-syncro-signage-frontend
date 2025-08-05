@@ -1,61 +1,18 @@
-import { createMasterUseCase } from "../helpers/createMasterUseCase";
+// src/usecases/order/playlist.js
 
-const initialPlaylists = [
-    {
-        code: "PL001",
-        name: "Promo Agustus",
-        client: "PT JAYA MAKMUR",
-        duration: "00:45:00",
-        totalItems: 12,
-        status: "Active"
-    },
-    {
-        code: "PL002",
-        name: "Produk Baru",
-        client: "JAYA TERUS",
-        duration: "00:30:00",
-        totalItems: 8,
-        status: "Inactive"
-    }
-];
+import {
+    playlistListRequest,
+    playlistCreateRequest
+} from '../../src/api/order/playlist';
 
-const defaultForm = {
-    code: "",
-    name: "",
-    client: "",
-    duration: "",
-    totalItems: 0,
-    status: "Active"
-};
+/** Ambil list playlist */
+export async function fetchPlaylists(customer_id, outlet_id) {
+    const json = await playlistListRequest(customer_id, outlet_id);
+    return json.data;
+}
 
-export const playlistUseCase = () => {
-    const {
-        items,
-        filteredItems,
-        form,
-        modal,
-        openAdd,
-        openEdit,
-        deleteItem,
-        confirmDelete,
-        handleSubmit,
-        closeModal,
-        search,
-        updateSearch
-    } = createMasterUseCase(initialPlaylists, defaultForm);
-
-    return {
-        playlists: items,
-        filteredPlaylists: filteredItems,
-        form,
-        modal,
-        openAdd,
-        openEdit,
-        deleteItem,
-        confirmDelete,
-        handleSubmit,
-        closeModal,
-        search,
-        updateSearch
-    };
-};
+/** Tambah playlist */
+export async function createPlaylist(data) {
+    const res = await playlistCreateRequest(data);
+    return await res.json();
+}

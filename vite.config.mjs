@@ -12,7 +12,8 @@ export default defineConfig(({ mode }) => {
       port: 5173,
       proxy: {
         '/api': {
-          target: 'https://syncrosignage.com',
+          // target: 'https://syncrosignage.com',
+          target: 'http://192.168.210.86:8000',
           changeOrigin: true,
           secure: false,
         },

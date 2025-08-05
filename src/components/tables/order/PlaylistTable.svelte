@@ -1,56 +1,93 @@
-<!-- src/components/tables/PlaylistTable.svelte -->
 <script>
     export let playlists = [];
-    export let onEdit;
-    export let onDelete;
+
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+    let showModal = false;
+    let previewPath = "";
+
+    function openPreviewModal(filePath) {
+        previewPath = filePath;
+        showModal = true;
+    }
+
+    function closeModal() {
+        showModal = false;
+        previewPath = "";
+    }
 </script>
 
-<table class="w-full text-sm">
-    <thead class="bg-gradient-to-r from-gray-100 via-white to-white">
+<!-- 🧾 Table Orders -->
+<table
+    class="min-w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden"
+>
+    <thead class="bg-gray-100 text-gray-700">
         <tr>
-            <th class="px-4 py-2 text-left text-[#5E6B75] font-semibold"
-                >Code</th
-            >
-            <th class="px-4 py-2 text-left text-[#5E6B75] font-semibold"
-                >Name</th
-            >
-            <th class="px-4 py-2 text-left text-[#5E6B75] font-semibold"
-                >Client</th
-            >
-            <th class="px-4 py-2 text-left text-[#5E6B75] font-semibold"
-                >Duration</th
-            >
-            <th class="px-4 py-2 text-left text-[#5E6B75] font-semibold"
-                >Total Items</th
-            >
-            <th class="px-4 py-2 text-left text-[#5E6B75] font-semibold"
-                >Actions</th
-            >
+            <th class="px-4 py-2 text-left">⏱ Preview</th>
+            <th class="px-4 py-2 text-left">📣 Order Name</th>
+            <th class="px-4 py-2 text-left">🧾 Outlet Name</th>
+            <th class="px-4 py-2 text-left">🧾 Screen Name</th>
+            <th class="px-4 py-2 text-left">🧾 Version Name</th>
+            <th class="px-4 py-2 text-left">⏱ Duration</th>
         </tr>
     </thead>
+
     <tbody>
         {#each playlists as playlist, index}
-            <tr class="border-t">
-                <td class="px-4 py-2">{playlist.code}</td>
-                <td class="px-4 py-2">{playlist.name}</td>
-                <td class="px-4 py-2">{playlist.client}</td>
-                <td class="px-4 py-2">{playlist.duration}</td>
-                <td class="px-4 py-2">{playlist.totalItems}</td>
-                <td class="px-4 py-2 space-x-2">
-                    <button
-                        on:click={() => onEdit(index)}
-                        class="text-blue-600 hover:text-blue-800"
-                    >
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button
-                        on:click={() => onDelete(index)}
-                        class="text-red-600 hover:text-red-800"
-                    >
-                        <i class="fas fa-trash"></i>
-                    </button>
+            <tr
+                class="hover:bg-gray-50 border-t transition duration-150 ease-in-out"
+            >
+                <td class="px-4 py-2">
+                    {#if playlist.file_path}
+                        <button
+                            class="text-blue-600 hover:underline"
+                            on:click={() =>
+                                openPreviewModal(
+                                    `${baseUrl}${playlist.file_path}`,
+                                )}
+                        >
+                            Preview
+                        </button>
+                    {:else}
+                        <span class="text-gray-400 italic">No file</span>
+                    {/if}
+                </td>
+                <td class="px-4 py-2">{playlist.order_name}</td>
+                <td class="px-4 py-2">{playlist.outlet_name}</td>
+                <td class="px-4 py-2">{playlist.screen_name}</td>
+                <td class="px-4 py-2">{playlist.version_name}</td>
+                <td class="px-4 py-2">{playlist.order_duration}</td>
+            </tr>
+        {:else}
+            <tr>
+                <td colspan="6" class="text-center text-gray-500 p-4 text-sm">
+                    No data found.
                 </td>
             </tr>
         {/each}
     </tbody>
 </table>
+
+{#if showModal}
+    <div
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+        <div
+            class="bg-white p-6 rounded-lg shadow-lg max-w-3xl w-full relative"
+        >
+            <button
+                class="absolute top-2 right-2 text-gray-600 hover:text-black"
+                on:click={closeModal}
+                title="Close"
+            >
+                ✖
+            </button>
+            <h2 class="text-lg font-semibold mb-4 text-gray-800">
+                Preview Video
+            </h2>
+            <video src={previewPath} controls autoplay class="w-full rounded">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+{/if}

@@ -85,5 +85,9 @@ export const API_ENDPOINTS = {
         update: (id) => `${BASE_URL}/order/item/update/${id}`,
         delete: (id) => `${BASE_URL}/order/item/delete/${id}`,
     },
+    playlist: {
+        find: (customer_id, outlet_id) => `${BASE_URL}/playlist/get/${customer_id}/${outlet_id}`,
+        create: `${BASE_URL}/playlist/create`,
+    },
 };
 
