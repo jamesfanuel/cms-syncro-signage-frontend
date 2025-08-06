@@ -1,5 +1,7 @@
 <script>
     import { upload } from "../../../../../usecases/master/product.js";
+    import { createEventDispatcher } from "svelte";
+    const dispatch = createEventDispatcher();
     export let versionId;
 
     let file = null;
@@ -44,6 +46,8 @@
 
         uploading = false;
         message = "Upload selesai!";
+
+        dispatch("close");
     }
 </script>
 

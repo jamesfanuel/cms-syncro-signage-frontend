@@ -2,17 +2,17 @@
     import { createEventDispatcher, onMount } from "svelte";
 
     export let selectedVersion = null;
-    console.log("selectedVersion", selectedVersion);
 
     const dispatch = createEventDispatcher();
     const currentUser = localStorage.getItem("user_name");
     const customerId = localStorage.getItem("customer_id") || "unknown";
 
-    export let products = [];
+    export let selectedProductId;
+    export let selectedProductName;
 
     let formData = {
         version_id: null,
-        product_id: null,
+        product_id: selectedProductId,
         version_name: "",
         resolution: "",
         file_path: "", // akan diisi saat upload
@@ -34,7 +34,7 @@
     ) {
         formData = {
             version_id: selectedVersion.version_id, // ← SET INI
-            product_id: selectedVersion.product_id,
+            product_id: selectedProductId,
             version_name: selectedVersion.version_name || "",
             resolution: selectedVersion.resolution || "",
             file_path: selectedVersion.file_path || "",
@@ -52,7 +52,7 @@
     } else if (!selectedVersion && formData.version_id !== null) {
         formData = {
             version_id: null, // ← RESET INI JUGA
-            product_id: null,
+            product_id: selectedProductId,
             version_name: "",
             resolution: "",
             file_path: "",
@@ -87,27 +87,31 @@
 
 <div class="space-y-4">
     <div>
+        <label class="block text-sm mb-1 font-medium">Product Name</label>
+
+        <!-- Hidden input untuk dikirim (ID) -->
+        <input
+            type="hidden"
+            name="product_id"
+            bind:value={formData.product_id}
+        />
+
+        <!-- Read-only input untuk ditampilkan ke user (Name) -->
+        <input
+            type="text"
+            class="w-full px-3 py-2 border rounded bg-gray-100 cursor-not-allowed"
+            value={selectedProductName}
+            readonly
+        />
+    </div>
+
+    <div>
         <label class="block text-sm mb-1 font-medium">Version Name</label>
         <input
             class="w-full px-3 py-2 border rounded"
             bind:value={formData.version_name}
             placeholder="v1.0"
         />
-    </div>
-
-    <div>
-        <label class="block text-sm mb-1 font-medium">Product Name</label>
-        <select
-            class="w-full px-3 py-2 border rounded"
-            bind:value={formData.product_id}
-        >
-            <option value="" disabled>Pilih Product</option>
-            {#each products as product}
-                <option value={+product.product_id}>
-                    {product.product_name}
-                </option>
-            {/each}
-        </select>
     </div>
 
     <div>

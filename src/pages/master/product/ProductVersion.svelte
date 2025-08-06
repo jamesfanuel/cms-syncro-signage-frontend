@@ -21,6 +21,8 @@
     let isOpen = false;
     let isUploadOpen = false;
     let selectedVersion = null;
+    let selectedProductId = "";
+    let selectedProductName = "";
 
     async function loadProductVersions() {
         const customerId = localStorage.getItem("customer_id");
@@ -30,7 +32,10 @@
             return;
         }
 
-        productVersions = await fetchProductVersions(Number(customerId));
+        productVersions = await fetchProductVersions(
+            Number(customerId),
+            selectedProductId,
+        );
         if (!searchText) {
             filteredProductVersions = productVersions;
         } else {
@@ -106,6 +111,7 @@
 
     function handleCloseUploadForm() {
         isUploadOpen = false;
+        loadProductVersions();
     }
 
     async function loadProducts() {
@@ -118,8 +124,13 @@
         products = await fetchProductItems(Number(customerId));
     }
 
-    onMount(() => {
+    $: if (selectedProductId) {
         loadProductVersions();
+    } else {
+        productVersions = []; // kosongkan jika belum pilih outlet
+    }
+
+    onMount(() => {
         loadProducts();
     });
 </script>
@@ -127,6 +138,13 @@
 <PageLayout
     title="Product Version"
     icon="🏢"
+    page="versions"
+    {products}
+    selectedProduct={selectedProductId}
+    onProductChange={(val) => {
+        selectedProductId = val.product_id;
+        selectedProductName = val.product_name;
+    }}
     bind:searchText
     onSearchChange={handleSearchChange}
     onAdd={openAddForm}
@@ -149,7 +167,8 @@
         >
             <ProductVersionForm
                 {selectedVersion}
-                {products}
+                {selectedProductId}
+                {selectedProductName}
                 on:submit={(e) => handleFormSubmit(e.detail)}
                 on:close={handleCloseForm}
             />

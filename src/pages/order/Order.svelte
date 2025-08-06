@@ -19,7 +19,10 @@
 
     import { fetchCampaigns } from "../../../usecases/order/campaign.js";
     import { fetchOutlets } from "../../../usecases/master/outlet.js";
-    import { fetchProductVersions } from "../../../usecases/master/product.js";
+    import {
+        fetchProductItems,
+        fetchProductVersions,
+    } from "../../../usecases/master/product.js";
 
     let orders = [];
     let filteredOrders = [];
@@ -85,7 +88,7 @@
         selectedOrderItem = null;
         isOpenItem = true;
         loadOutlets();
-        loadVersions();
+        loadProducts();
     }
 
     function openEditItemForm(order, orderItem) {
@@ -152,15 +155,15 @@
         outlets = await fetchOutlets(Number(customerId));
     }
 
-    let versions = [];
-    async function loadVersions() {
+    let products = [];
+    async function loadProducts() {
         const customerId = localStorage.getItem("customer_id");
         if (!customerId) {
             console.warn("customer_id not found in localStorage");
             return;
         }
 
-        versions = await fetchProductVersions(Number(customerId));
+        products = await fetchProductItems(Number(customerId));
     }
 
     function handleCloseForm() {
@@ -217,7 +220,7 @@
             <OrderItemForm
                 {selectedOrder}
                 {selectedOrderItem}
-                {versions}
+                {products}
                 {outlets}
                 on:edit={(e) => openEditItemForm(e.detail)}
                 on:submit={(e) => handleItemFormSubmit(e.detail)}

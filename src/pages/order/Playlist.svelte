@@ -15,8 +15,10 @@
     let selectedOutletId = "";
     let isLoading = false;
 
+    const currentUser = localStorage.getItem("user_name") || "unknown";
+    const customerId = localStorage.getItem("customer_id") || "unknown";
+
     async function generatePlaylists(outlet_id) {
-        const customerId = localStorage.getItem("customer_id");
         if (!customerId) {
             console.warn("customer_id not found in localStorage");
             return;
@@ -27,6 +29,7 @@
         let formData = {
             customer_id: customerId,
             outlet_id: outlet_id,
+            created_by: currentUser,
         };
 
         try {

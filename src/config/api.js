@@ -42,7 +42,7 @@ export const API_ENDPOINTS = {
         delete: (id) => `${BASE_URL}/product/item/delete/${id}`,
     },
     productVersion: {
-        find: (customer_id) => `${BASE_URL}/customer/${customer_id}/versions`,
+        find: (customer_id, product_id) => `${BASE_URL}/customer/${customer_id}/product/${product_id}/versions`,
         findById: (id) => `${BASE_URL}/product/version/get/${id}`,
         create: `${BASE_URL}/product/version/create`,
         update: (id) => `${BASE_URL}/product/version/update/${id}`,

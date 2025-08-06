@@ -62,8 +62,8 @@ export function productItemDeleteRequest(id) {
 
 /** PRODUCT VERSIONS */
 
-export async function productVersionListRequest(customer_id) {
-    const response = await fetch(API_ENDPOINTS.productVersion.find(customer_id));
+export async function productVersionListRequest(customer_id, product_id) {
+    const response = await fetch(API_ENDPOINTS.productVersion.find(customer_id, product_id));
     if (!response.ok) throw new Error('Gagal fetch data product version');
     return await response.json();
 }

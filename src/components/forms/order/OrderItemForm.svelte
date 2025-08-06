@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher } from "svelte";
+    import { fetchProductVersions } from "../../../../usecases/master/product.js";
     import { fetchFormationsByOutlet } from "../../../../usecases/master/formation.js";
 
     export let selectedOrder = null;
@@ -9,11 +10,14 @@
     const currentUser = localStorage.getItem("user_name") || "unknown";
     const customerId = localStorage.getItem("customer_id") || "unknown";
 
+    export let products = [];
     export let versions = [];
     export let outlets = [];
     let screens = [];
     let selectedOutletId = "";
+    let selectedProductId = "";
     let filteredScreens = [];
+    let filteredVersions = [];
 
     let formData = {
         version_id: null,
@@ -71,6 +75,25 @@
         dispatch("close");
     }
 
+    async function handleProductChange() {
+        formData.version_id = "";
+
+        // Fetch formations based on selected outlet
+        try {
+            versions = await fetchProductVersions(
+                customerId,
+                +selectedProductId,
+            );
+
+            // Baru filter setelah data diperbarui
+            filteredVersions = versions.filter(
+                (version) => version.product_id == selectedProductId,
+            );
+        } catch (error) {
+            console.error("Failed to fetch formations:", error);
+        }
+    }
+
     async function handleOutletChange() {
         // Set formData values
         formData.outlet_id = selectedOutletId;
@@ -79,7 +102,6 @@
         // Fetch formations based on selected outlet
         try {
             screens = await fetchFormationsByOutlet(+selectedOutletId);
-            console.log("Formations:", screens);
 
             // Baru filter setelah data diperbarui
             filteredScreens = screens.filter(
@@ -95,14 +117,30 @@
 
 <div class="space-y-4">
     <div>
+        <label class="block text-sm mb-1 font-medium">Product Name</label>
+        <select
+            class="w-full px-3 py-2 border rounded"
+            bind:value={selectedProductId}
+            on:change={handleProductChange}
+        >
+            <option value="" disabled>Pilih Product</option>
+            {#each products as product}
+                <option value={+product.product_id}>
+                    {product.product_name}
+                </option>
+            {/each}
+        </select>
+    </div>
+
+    <div>
         <label class="block text-sm mb-1 font-medium">Version Name</label>
         <select
             class="w-full px-3 py-2 border rounded"
             bind:value={formData.version_id}
         >
             <option value="" disabled>Pilih Version</option>
-            {#each versions as version}
-                <option value={+version.version_id}>
+            {#each filteredVersions as version}
+                <option value={version.version_id}>
                     {version.version_name}
                 </option>
             {/each}

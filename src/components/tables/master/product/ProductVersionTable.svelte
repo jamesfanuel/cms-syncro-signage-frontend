@@ -24,6 +24,7 @@
 
     function handleUpload(productVersion) {
         dispatch("upload", productVersion);
+        dispatch("close");
     }
 
     function openPreviewModal(filePath) {

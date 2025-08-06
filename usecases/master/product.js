@@ -69,8 +69,8 @@ export async function deleteProductItem(id) {
 ///////////////////
 
 /** Ambil list product item*/
-export async function fetchProductVersions(customer_id) {
-    const json = await productVersionListRequest(customer_id);
+export async function fetchProductVersions(customer_id, product_id) {
+    const json = await productVersionListRequest(customer_id, product_id);
     return json.data;
 }
 

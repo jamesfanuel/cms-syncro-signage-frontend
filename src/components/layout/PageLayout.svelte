@@ -6,8 +6,11 @@
     export let onAdd = null;
     export let page = "";
     export let outlets = [];
+    export let products = [];
     export let selectedOutlet = "";
+    export let selectedProduct = "";
     export let onOutletChange = () => {};
+    export let onProductChange = () => {};
     export let onGeneratePlaylist = null;
     export let isLoading = false;
 
@@ -18,6 +21,20 @@
     function handleOutletChange(e) {
         onOutletChange(e.target.value);
         console.log("Selected Outlet:", selectedOutlet);
+    }
+
+    function handleProductChange(e) {
+        const selectedId = e.target.value;
+        const selected = products.find(
+            (p) => String(p.product_id) === selectedId,
+        );
+
+        if (typeof onProductChange === "function" && selected) {
+            onProductChange({
+                product_id: selected.product_id,
+                product_name: selected.product_name,
+            });
+        }
     }
 </script>
 
@@ -33,6 +50,21 @@
         </h1>
 
         <div class="flex gap-2 items-center">
+            {#if page === "versions"}
+                <select
+                    class="border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5E6B75]"
+                    bind:value={selectedProduct}
+                    on:change={handleProductChange}
+                >
+                    <option value="" disabled>Select Product</option>
+                    {#each products as product}
+                        <option value={String(product.product_id)}
+                            >{product.product_name}</option
+                        >
+                    {/each}
+                </select>
+            {/if}
+
             {#if page !== "playlist"}
                 <input
                     type="text"
@@ -75,7 +107,11 @@
             {#if onAdd && page !== "playlist"}
                 <button
                     on:click={onAdd}
-                    class="bg-[#5E6B75] text-white px-4 py-2 rounded-xl hover:bg-[#4c5962] text-sm shadow-md transition"
+                    class="px-4 py-2 rounded-xl text-sm shadow-md transition
+                            text-white
+                            bg-[#5E6B75] hover:bg-[#4c5962]
+                            disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400"
+                    disabled={!selectedProduct}
                 >
                     <i class="fas fa-plus mr-2"></i> Add
                 </button>
