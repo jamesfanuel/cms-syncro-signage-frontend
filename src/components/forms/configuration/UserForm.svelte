@@ -13,7 +13,6 @@
         id: null,
         user_name: "",
         password: "",
-        email: "",
         customer_id: "",
         is_admin: "",
         expired_at: "",
@@ -25,7 +24,6 @@
             id: selectedUser.id,
             user_name: selectedUser.user_name,
             password: selectedUser.password,
-            email: selectedUser.email,
             customer_id: parseInt(selectedUser.customer_id) || null,
             is_admin:
                 selectedUser.is_admin === true || selectedUser.is_admin === 1
@@ -39,7 +37,6 @@
             id: null,
             user_name: "",
             password: "",
-            email: "",
             customer_id: "",
             is_admin: "",
             expired_at: "",

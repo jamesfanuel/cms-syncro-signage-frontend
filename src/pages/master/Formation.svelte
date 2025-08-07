@@ -17,9 +17,18 @@
   let formations = [];
   let filteredFormations = [];
   let searchText = "";
+  let selectedOutletId = "";
   let isOpen = false;
   let selectedFormation = null;
   let outlets = [];
+  let canAdd = false;
+
+  $: if (selectedOutletId) {
+    loadFormations();
+    canAdd = true;
+  } else {
+    formations = []; // kosongkan jika belum pilih outlet
+  }
 
   async function loadFormations() {
     const customerId = localStorage.getItem("customer_id");
@@ -52,7 +61,7 @@
     filteredFormations = formations.filter(
       (c) =>
         c.outlet_name?.toLowerCase().includes(q) ||
-        c.screen_name?.toLowerCase().includes(q)
+        c.screen_name?.toLowerCase().includes(q),
     );
   }
 
@@ -111,7 +120,6 @@
   }
 
   onMount(() => {
-    loadFormations();
     loadOutlets();
   });
 </script>
@@ -119,9 +127,14 @@
 <PageLayout
   title="Formation"
   icon="🏢"
+  page="formation"
+  {outlets}
+  selectedOutlet={selectedOutletId}
+  onOutletChange={(val) => (selectedOutletId = val)}
   bind:searchText
   onSearchChange={handleSearchChange}
   onAdd={openAddForm}
+  {canAdd}
 >
   <div class="px-6">
     <FormationTable

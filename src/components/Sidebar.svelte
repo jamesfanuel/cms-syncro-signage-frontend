@@ -189,6 +189,13 @@
                 >👤 Users</button
               >
             </li>
+            <li>
+              <button
+                on:click={() => select("license")}
+                class={`w-full text-left px-2 py-1 rounded hover:bg-gray-200 ${isActive("license")}`}
+                >👤 License</button
+              >
+            </li>
           </ul>
         {/if}
       </div>

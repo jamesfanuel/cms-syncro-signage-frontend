@@ -20,6 +20,13 @@ export const API_ENDPOINTS = {
         update: (id) => `${BASE_URL}/auth/update/${id}`,
         delete: (id) => `${BASE_URL}/auth/delete/${id}`,
     },
+    license: {
+        find: `${BASE_URL}/license/get`,
+        validate: `${BASE_URL}/license/validate`,
+        create: `${BASE_URL}/license/register`,
+        update: (id) => `${BASE_URL}/license/update/${id}`,
+        delete: (id) => `${BASE_URL}/license/delete/${id}`,
+    },
     client: {
         find: (customer_id) => `${BASE_URL}/customer/${customer_id}/clients`,
         findById: (id) => `${BASE_URL}/client/get/${id}`,

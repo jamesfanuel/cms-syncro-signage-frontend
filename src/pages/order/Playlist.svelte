@@ -75,7 +75,6 @@
     }
 
     onMount(() => {
-        loadPlaylists();
         loadOutlets();
     });
 </script>

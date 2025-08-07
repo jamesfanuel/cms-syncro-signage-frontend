@@ -23,6 +23,7 @@
     let selectedVersion = null;
     let selectedProductId = "";
     let selectedProductName = "";
+    let canAdd = false;
 
     async function loadProductVersions() {
         const customerId = localStorage.getItem("customer_id");
@@ -126,6 +127,7 @@
 
     $: if (selectedProductId) {
         loadProductVersions();
+        canAdd = true;
     } else {
         productVersions = []; // kosongkan jika belum pilih outlet
     }
@@ -138,7 +140,7 @@
 <PageLayout
     title="Product Version"
     icon="🏢"
-    page="versions"
+    page="product_version"
     {products}
     selectedProduct={selectedProductId}
     onProductChange={(val) => {
@@ -148,6 +150,7 @@
     bind:searchText
     onSearchChange={handleSearchChange}
     onAdd={openAddForm}
+    {canAdd}
 >
     <div class="px-6">
         <ProductVersionTable

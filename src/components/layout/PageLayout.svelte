@@ -13,6 +13,7 @@
     export let onProductChange = () => {};
     export let onGeneratePlaylist = null;
     export let isLoading = false;
+    export let canAdd = true;
 
     function handleInput(e) {
         onSearchChange(e.target.value);
@@ -50,7 +51,17 @@
         </h1>
 
         <div class="flex gap-2 items-center">
-            {#if page === "versions"}
+            {#if page !== "playlist"}
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    class="border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5E6B75]"
+                    value={searchText}
+                    on:input={handleInput}
+                />
+            {/if}
+
+            {#if page === "product_version"}
                 <select
                     class="border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5E6B75]"
                     bind:value={selectedProduct}
@@ -65,17 +76,7 @@
                 </select>
             {/if}
 
-            {#if page !== "playlist"}
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    class="border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5E6B75]"
-                    value={searchText}
-                    on:input={handleInput}
-                />
-            {/if}
-
-            {#if page === "playlist"}
+            {#if page === "playlist" || page === "formation"}
                 <select
                     class="border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5E6B75]"
                     bind:value={selectedOutlet}
@@ -111,7 +112,7 @@
                             text-white
                             bg-[#5E6B75] hover:bg-[#4c5962]
                             disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400"
-                    disabled={!selectedProduct}
+                    disabled={!canAdd}
                 >
                     <i class="fas fa-plus mr-2"></i> Add
                 </button>

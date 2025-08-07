@@ -7,6 +7,7 @@ export async function formationListRequest(customer_id) {
     return await response.json();
 }
 
+
 export function formationCreateRequest(data) {
     return fetch(API_ENDPOINTS.formation.create, {
         method: 'POST',

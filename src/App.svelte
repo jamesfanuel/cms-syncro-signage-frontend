@@ -19,6 +19,7 @@
   import VideoUploader from "./pages/VideoUploader.svelte";
   import Customer from "./pages/configuration/Customer.svelte";
   import User from "./pages/configuration/User.svelte";
+  import License from "./pages/configuration/License.svelte";
 
   let selectedMenu = "dashboard";
   let isSidebarOpen = false;
@@ -91,6 +92,8 @@
       <VideoUploader />
     {:else if selectedMenu === "customer"}
       <Customer />
+    {:else if selectedMenu === "license"}
+      <License />
     {:else if selectedMenu === "users"}
       <User />
     {:else}
