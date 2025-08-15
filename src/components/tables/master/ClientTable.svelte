@@ -15,6 +15,29 @@
             dispatch("delete", { id: client.client_id });
         }
     }
+
+    // Pagination state
+    let currentPage = 1;
+    let itemsPerPage = 5;
+
+    $: totalPages = Math.ceil(clients.length / itemsPerPage);
+
+    $: paginatedClients = clients.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage,
+    );
+
+    function nextPage() {
+        if (currentPage < totalPages) currentPage++;
+    }
+
+    function prevPage() {
+        if (currentPage > 1) currentPage--;
+    }
+
+    function goToPage(page) {
+        currentPage = page;
+    }
 </script>
 
 <table
@@ -41,7 +64,7 @@
     </thead>
 
     <tbody>
-        {#each clients as client, index}
+        {#each paginatedClients as client}
             <tr
                 class="hover:bg-gray-50 border-t transition duration-150 ease-in-out"
             >
@@ -77,3 +100,37 @@
         {/each}
     </tbody>
 </table>
+
+<!-- Pagination controls -->
+<div class="flex justify-center items-center mt-4 space-x-1">
+    <!-- Prev Button -->
+    <button
+        class="px-3 py-1 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:hover:bg-white transition"
+        on:click={prevPage}
+        disabled={currentPage === 1}
+    >
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <!-- Numbered Pages -->
+    {#each Array(totalPages) as _, i}
+        <button
+            class="px-3 py-1 rounded-md border text-sm transition
+                {currentPage === i + 1
+                ? 'bg-[#5E6B75] text-white border-[#5E6B75]'
+                : 'border-gray-300 text-gray-600 hover:bg-gray-100'}"
+            on:click={() => goToPage(i + 1)}
+        >
+            {i + 1}
+        </button>
+    {/each}
+
+    <!-- Next Button -->
+    <button
+        class="px-3 py-1 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:hover:bg-white transition"
+        on:click={nextPage}
+        disabled={currentPage === totalPages}
+    >
+        <i class="fas fa-chevron-right"></i>
+    </button>
+</div>

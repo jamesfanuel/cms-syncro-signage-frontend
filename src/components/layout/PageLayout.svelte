@@ -6,11 +6,14 @@
     export let onAdd = null;
     export let page = "";
     export let outlets = [];
+    export let categories = [];
     export let products = [];
     export let selectedOutlet = "";
     export let selectedProduct = "";
+    export let selectedCategory = "";
     export let onOutletChange = () => {};
     export let onProductChange = () => {};
+    export let onCategoryChange = () => {};
     export let onGeneratePlaylist = null;
     export let isLoading = false;
     export let canAdd = true;
@@ -22,6 +25,20 @@
     function handleOutletChange(e) {
         onOutletChange(e.target.value);
         console.log("Selected Outlet:", selectedOutlet);
+    }
+
+    function handleCategoryChange(e) {
+        const selectedId = e.target.value;
+        const selected = categories.find(
+            (c) => String(c.category_id) === selectedId,
+        );
+
+        if (typeof onCategoryChange === "function" && selected) {
+            onCategoryChange({
+                category_id: selected.category_id,
+                category_name: selected.category_name,
+            });
+        }
     }
 
     function handleProductChange(e) {
@@ -59,6 +76,21 @@
                     value={searchText}
                     on:input={handleInput}
                 />
+            {/if}
+
+            {#if page === "product_item" || page === "product_version"}
+                <select
+                    class="border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5E6B75]"
+                    bind:value={selectedCategory}
+                    on:change={handleCategoryChange}
+                >
+                    <option value="" disabled>Select Category</option>
+                    {#each categories as category}
+                        <option value={String(category.category_id)}
+                            >{category.category_name}</option
+                        >
+                    {/each}
+                </select>
             {/if}
 
             {#if page === "product_version"}

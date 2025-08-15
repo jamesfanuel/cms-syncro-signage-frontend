@@ -22,6 +22,9 @@
   let searchText = "";
   let isOpen = false;
   let selectedItem = null;
+  let selectedCategoryId = "";
+  let selectedCategoryName = "";
+  let canAdd = false;
 
   async function loadProductItems() {
     const customerId = localStorage.getItem("customer_id");
@@ -31,7 +34,10 @@
       return;
     }
 
-    productItems = await fetchProductItems(Number(customerId));
+    productItems = await fetchProductItems(
+      Number(customerId),
+      selectedCategoryId,
+    );
     if (!searchText) {
       filteredProductItems = productItems;
     } else {
@@ -111,7 +117,7 @@
 
     clients = await fetchClients(Number(customerId));
   }
-  
+
   async function loadCategories() {
     const customerId = localStorage.getItem("customer_id");
     if (!customerId) {
@@ -121,8 +127,15 @@
     categories = await fetchProductCategories(Number(customerId));
   }
 
-  onMount(() => {
+  $: if (selectedCategoryId) {
     loadProductItems();
+    canAdd = true;
+  } else {
+    categories = []; // kosongkan jika belum pilih outlet
+  }
+
+  onMount(() => {
+    // loadProductItems();
     loadClients();
     loadCategories();
   });
@@ -131,9 +144,17 @@
 <PageLayout
   title="Product Item"
   icon="🏢"
+  page="product_item"
+  {categories}
+  {selectedCategoryId}
+  onCategoryChange={({ category_id, category_name }) => {
+    selectedCategoryId = String(category_id);
+    selectedCategoryName = category_name;
+  }}
   bind:searchText
   onSearchChange={handleSearchChange}
   onAdd={openAddForm}
+  {canAdd}
 >
   <div class="px-6">
     <ProductItemTable
@@ -151,7 +172,8 @@
       <ProductItemForm
         {selectedItem}
         {clients}
-        {categories}
+        {selectedCategoryId}
+        {selectedCategoryName}
         on:submit={(e) => handleFormSubmit(e.detail)}
         on:close={handleCloseForm}
       />

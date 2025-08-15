@@ -2,6 +2,8 @@
     import { createEventDispatcher } from "svelte";
     import { login } from "../../../usecases/auth";
 
+    export let appName;
+
     const dispatch = createEventDispatcher();
 
     let username = "";
@@ -16,8 +18,6 @@
 
         try {
             const userInfo = await login(username, password);
-
-            // Dispatch event ke LoginPage.svelte
             dispatch("login", userInfo);
         } catch (err) {
             errorMessage = err.message;
@@ -31,53 +31,57 @@
 
 <form
     on:submit|preventDefault={handleLogin}
-    class={`bg-white/80 shadow-2xl backdrop-blur-md rounded-xl px-10 pt-8 pb-10 w-full max-w-md border border-gray-300 transition-all duration-300 ${
+    class={`bg-white/10 backdrop-blur-2xl border border-white/20 rounded-2xl px-12 pt-10 pb-12 w-full max-w-lg shadow-2xl transition-all duration-300 space-y-8 ${
         isShaking ? "animate-shake" : ""
     }`}
 >
-    <h2 class="text-2xl font-bold mb-6 text-center text-[#5E6B75]">
-        Login CMS
-    </h2>
+    <label class="block text-base font-light text-white/70">
+        Sign In To Your Account
+    </label>
 
-    <div class="mb-4">
-        <label
-            for="username"
-            class="block text-[#5E6B75] text-sm font-medium mb-1"
-        >
-            Username
-        </label>
+    <!-- Email Field with Floating Label -->
+    <div class="relative">
         <input
             id="username"
             type="text"
             bind:value={username}
             required
-            class="border border-gray-300 rounded-md w-full py-2 px-4 shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            placeholder=" "
+            class="peer w-full bg-transparent border-b border-white/40 py-3 text-white placeholder-transparent focus:outline-none focus:border-blue-400"
         />
+        <label
+            for="username"
+            class="absolute left-0 -top-3.5 text-sm text-white/50 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-white/50 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-blue-400"
+        >
+            Your email
+        </label>
     </div>
 
-    <div class="mb-5">
-        <label
-            for="password"
-            class="block text-[#5E6B75] text-sm font-medium mb-1"
-        >
-            Password
-        </label>
+    <!-- Password Field -->
+    <div class="relative">
         <input
             id="password"
             type="password"
             bind:value={password}
             required
-            class="border border-gray-300 rounded-md w-full py-2 px-4 shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            placeholder=" "
+            class="peer w-full bg-transparent border-b border-white/40 py-3 text-white placeholder-transparent focus:outline-none focus:border-blue-400"
         />
+        <label
+            for="password"
+            class="absolute left-0 -top-3.5 text-sm text-white/50 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-white/50 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-blue-400"
+        >
+            Your password
+        </label>
     </div>
 
     {#if errorMessage}
-        <p class="text-red-600 text-sm mb-4">{errorMessage}</p>
+        <p class="text-red-400 text-sm">{errorMessage}</p>
     {/if}
 
     <button
         type="submit"
-        class="w-full bg-[#5E6B75] hover:bg-[#4d5962] transition duration-300 text-white font-semibold py-2 px-4 rounded-md flex items-center justify-center"
+        class="w-full bg-[#4AB3F4] hover:bg-[#3094d4] transition duration-300 text-white font-semibold py-3 rounded-xl flex items-center justify-center shadow-lg"
         disabled={isLoading}
     >
         {#if isLoading}
@@ -86,7 +90,7 @@
             ></span>
             Logging in...
         {:else}
-            Login
+            LOG IN
         {/if}
     </button>
 </form>
@@ -107,7 +111,6 @@
             transform: translateX(-3px);
         }
     }
-
     .animate-shake {
         animation: shake 0.4s ease-in-out;
     }

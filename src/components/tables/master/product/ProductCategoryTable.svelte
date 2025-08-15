@@ -1,4 +1,6 @@
 <script>
+    import Pagination from "./../../../Pagination.svelte";
+
     import { createEventDispatcher } from "svelte";
     export let productCategories = [];
 
@@ -16,6 +18,20 @@
         ) {
             dispatch("delete", { id: productCategory.category_id });
         }
+    }
+
+    let currentPage = 1;
+    const itemsPerPage = 5;
+
+    $: totalPages = Math.ceil(productCategories.length / itemsPerPage);
+
+    $: paginatedCategories = productCategories.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage,
+    );
+
+    function onPageChange(event) {
+        currentPage = event.detail;
     }
 </script>
 
@@ -40,7 +56,7 @@
     </thead>
 
     <tbody>
-        {#each productCategories as productCategory, index}
+        {#each paginatedCategories as productCategory}
             <tr
                 class="hover:bg-gray-50 border-t transition duration-150 ease-in-out"
             >
@@ -68,10 +84,17 @@
             </tr>
         {:else}
             <tr>
-                <td colspan="5" class="text-center text-gray-500 p-4 text-sm">
+                <td colspan="4" class="text-center text-gray-500 p-4 text-sm">
                     No data found.
                 </td>
             </tr>
         {/each}
     </tbody>
 </table>
+
+<Pagination
+    {currentPage}
+    {itemsPerPage}
+    totalItems={productCategories.length}
+    on:pageChange={onPageChange}
+/>

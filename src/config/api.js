@@ -42,7 +42,7 @@ export const API_ENDPOINTS = {
         delete: (id) => `${BASE_URL}/product/category/delete/${id}`,
     },
     productItem: {
-        find: (customer_id) => `${BASE_URL}/customer/${customer_id}/products`,
+        find: (customer_id, category_id) => `${BASE_URL}/customer/${customer_id}/category/${category_id}/products`,
         findById: (id) => `${BASE_URL}/product/item/get/${id}`,
         create: `${BASE_URL}/product/item/create`,
         update: (id) => `${BASE_URL}/product/item/update/${id}`,

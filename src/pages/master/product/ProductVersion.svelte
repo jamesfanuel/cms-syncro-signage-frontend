@@ -12,15 +12,18 @@
         updateProductVersion,
         deleteProductVersion,
         fetchProductItems,
+        fetchProductCategories,
     } from "../../../../usecases/master/product.js";
 
     let productVersions = [];
     let filteredProductVersions = [];
+    let categories = [];
     let products = [];
     let searchText = "";
     let isOpen = false;
     let isUploadOpen = false;
     let selectedVersion = null;
+    let selectedCategoryId = "";
     let selectedProductId = "";
     let selectedProductName = "";
     let canAdd = false;
@@ -122,7 +125,10 @@
             return;
         }
 
-        products = await fetchProductItems(Number(customerId));
+        products = await fetchProductItems(
+            Number(customerId),
+            selectedCategoryId,
+        );
     }
 
     $: if (selectedProductId) {
@@ -132,8 +138,25 @@
         productVersions = []; // kosongkan jika belum pilih outlet
     }
 
-    onMount(() => {
+    async function loadCategories() {
+        const customerId = localStorage.getItem("customer_id");
+        if (!customerId) {
+            console.warn("customer_id not found in localStorage");
+            return;
+        }
+        categories = await fetchProductCategories(Number(customerId));
+    }
+
+    $: if (selectedCategoryId) {
         loadProducts();
+        canAdd = true;
+    } else {
+        categories = []; // kosongkan jika belum pilih outlet
+    }
+
+    onMount(() => {
+        loadCategories();
+        // loadProducts();
     });
 </script>
 
@@ -141,7 +164,12 @@
     title="Product Version"
     icon="🏢"
     page="product_version"
+    {categories}
+    {selectedCategoryId}
     {products}
+    onCategoryChange={({ category_id }) => {
+        selectedCategoryId = String(category_id);
+    }}
     selectedProduct={selectedProductId}
     onProductChange={(val) => {
         selectedProductId = val.product_id;

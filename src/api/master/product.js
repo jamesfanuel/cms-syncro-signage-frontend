@@ -32,8 +32,8 @@ export function productCategoryDeleteRequest(id) {
 
 /** PRODUCT ITEM */
 
-export async function productItemListRequest(customer_id) {
-    const response = await fetch(API_ENDPOINTS.productItem.find(customer_id));
+export async function productItemListRequest(customer_id, category_id) {
+    const response = await fetch(API_ENDPOINTS.productItem.find(customer_id, category_id));
     if (!response.ok) throw new Error('Gagal fetch data product item');
     return await response.json();
 }

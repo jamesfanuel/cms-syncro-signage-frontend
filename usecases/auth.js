@@ -26,6 +26,7 @@ export async function login(username, password) {
             email: data.email,
             is_admin: data.is_admin,
             customer_id: data.customer_id,
+            level: data.level,
             role,
         });
 
@@ -38,6 +39,7 @@ export async function login(username, password) {
             email: data.email,
             is_admin: data.is_admin,
             customer_id: data.customer_id,
+            level: data.level,
             role,
         });
 
@@ -61,14 +63,14 @@ export function logout() {
         is_admin: null,
         customer_id: null,
         role: null,
+        level: null,
     });
-    location.reload(); // opsional
 }
 
 /**
  * Simpan session ke localStorage
  */
-function setSession({ token, user_id, user_name, email, is_admin, role, customer_id }) {
+function setSession({ token, user_id, user_name, email, is_admin, role, customer_id, level }) {
     localStorage.setItem("token", token);
     localStorage.setItem("user_id", user_id);
     localStorage.setItem("user_name", user_name);
@@ -77,6 +79,7 @@ function setSession({ token, user_id, user_name, email, is_admin, role, customer
     localStorage.setItem("role", role);
     localStorage.setItem("customer_id", customer_id);
     localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("level", level);
 }
 
 /**
@@ -91,6 +94,7 @@ function clearSession() {
     localStorage.removeItem("role");
     localStorage.removeItem("customer_id");
     localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("level");
 }
 
 /**
@@ -101,6 +105,7 @@ export function getUserSession() {
     const role = localStorage.getItem("role");
     const customer_id = localStorage.getItem("customer_id");
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    const level = localStorage.getItem("level");
 
     return {
         isLoggedIn,
@@ -111,5 +116,6 @@ export function getUserSession() {
         email: localStorage.getItem("email") || null,
         is_admin: localStorage.getItem("is_admin") || null,
         customer_id: localStorage.getItem("customer_id") || null,
+        level: localStorage.getItem("level") || null,
     };
 }

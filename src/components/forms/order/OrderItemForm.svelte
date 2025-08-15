@@ -1,6 +1,9 @@
 <script>
     import { createEventDispatcher } from "svelte";
-    import { fetchProductVersions } from "../../../../usecases/master/product.js";
+    import {
+        fetchProductItems,
+        fetchProductVersions,
+    } from "../../../../usecases/master/product.js";
     import { fetchFormationsByOutlet } from "../../../../usecases/master/formation.js";
 
     export let selectedOrder = null;
@@ -10,12 +13,14 @@
     const currentUser = localStorage.getItem("user_name") || "unknown";
     const customerId = localStorage.getItem("customer_id") || "unknown";
 
+    export let categories = [];
     export let products = [];
     export let versions = [];
     export let outlets = [];
     let screens = [];
     let selectedOutletId = "";
     let selectedProductId = "";
+    let selectedCategoryId = "";
     let filteredScreens = [];
     let filteredVersions = [];
 
@@ -75,6 +80,20 @@
         dispatch("close");
     }
 
+    async function handleCategoryChange() {
+        // Fetch formations based on selected outlet
+        try {
+            products = await fetchProductItems(customerId, +selectedCategoryId);
+
+            // Baru filter setelah data diperbarui
+            filteredCategories = categories.filter(
+                (category) => category.category_id == selectedCategoryId,
+            );
+        } catch (error) {
+            console.error("Failed to fetch category:", error);
+        }
+    }
+
     async function handleProductChange() {
         formData.version_id = "";
 
@@ -116,6 +135,22 @@
 </script>
 
 <div class="space-y-4">
+    <div>
+        <label class="block text-sm mb-1 font-medium">Category Name</label>
+        <select
+            class="w-full px-3 py-2 border rounded"
+            bind:value={selectedCategoryId}
+            on:change={handleCategoryChange}
+        >
+            <option value="" disabled>Pilih Category</option>
+            {#each categories as category}
+                <option value={+category.category_id}>
+                    {category.category_name}
+                </option>
+            {/each}
+        </select>
+    </div>
+
     <div>
         <label class="block text-sm mb-1 font-medium">Product Name</label>
         <select

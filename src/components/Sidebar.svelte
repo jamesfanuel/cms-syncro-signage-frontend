@@ -2,12 +2,12 @@
   export let selectedMenu;
   export let isSidebarOpen = false;
   export let onSelect;
+  export let appName;
 
   let showMaster = false;
   let showOrder = false;
   let showConfig = false;
   let showProduct = false;
-
   let role = localStorage.getItem("role");
 
   function select(menu) {
@@ -44,7 +44,7 @@
     </div>
 
     <!-- Title -->
-    <h2 class="text-xl font-bold mb-6">📺 CMS Menu</h2>
+    <h2 class="text-xl font-bold mb-6">{appName}</h2>
 
     <!-- Dashboard -->
     <button

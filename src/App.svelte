@@ -23,6 +23,7 @@
 
   let selectedMenu = "dashboard";
   let isSidebarOpen = false;
+  let appName = import.meta.env.VITE_APP_NAME;
 
   function handleSelect(menu) {
     selectedMenu = menu;
@@ -35,12 +36,11 @@
 
   function handleLogout() {
     logout();
-    location.reload(); // atau redirect ke halaman login
   }
 </script>
 
 {#if !$auth.isLoggedIn}
-  <LoginPage />
+  <LoginPage {appName} />
 {:else}
   {#if !isSidebarOpen}
     <div class="fixed top-4 left-4 z-40">
@@ -62,7 +62,12 @@
     </div>
   {/if}
 
-  <Sidebar {selectedMenu} bind:isSidebarOpen onSelect={handleSelect} />
+  <Sidebar
+    {selectedMenu}
+    {appName}
+    bind:isSidebarOpen
+    onSelect={handleSelect}
+  />
   <Header onLogout={handleLogout} />
 
   <main

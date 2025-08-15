@@ -51,8 +51,8 @@
 
     async function handleFormSubmit(data) {
         try {
-            if (selectedUser && selectedUser.id) {
-                await updateUser(selectedUser.id, data);
+            if (selectedUser && selectedUser.user_id) {
+                await updateUser(selectedUser.user_id, data);
             } else {
                 await createUser(data);
             }

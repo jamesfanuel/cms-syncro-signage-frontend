@@ -10,11 +10,14 @@
     export let clients = [];
     export let categories = [];
 
+    export let selectedCategoryId;
+    export let selectedCategoryName;
+
     let formData = {
         product_id: null,
         product_name: "",
         client_id: null,
-        category_id: null,
+        category_id: selectedCategoryId,
         end_date: "",
         created_by: currentUser || "unknown",
         customer_id: customerId,
@@ -25,7 +28,7 @@
             product_id: selectedItem.product_id,
             product_name: selectedItem.product_name,
             client_id: parseInt(selectedItem.client_id),
-            category_id: parseInt(selectedItem.category_id),
+            category_id: selectedCategoryId,
             end_date: selectedItem.end_date,
             customer_id: parseInt(selectedItem.customer_id) || null,
             created_by: selectedItem.created_by,
@@ -35,7 +38,7 @@
             product_id: null,
             product_name: "",
             client_id: null,
-            category_id: null,
+            category_id: selectedCategoryId,
             end_date: "",
             customer_id: customerId,
             created_by: currentUser || "unknown",
@@ -60,6 +63,25 @@
 
 <div class="space-y-4">
     <div>
+        <label class="block text-sm mb-1 font-medium">Category Name</label>
+
+        <!-- Hidden input untuk dikirim (ID) -->
+        <input
+            type="hidden"
+            name="product_id"
+            bind:value={formData.category_id}
+        />
+
+        <!-- Read-only input untuk ditampilkan ke user (Name) -->
+        <input
+            type="text"
+            class="w-full px-3 py-2 border rounded bg-gray-100 cursor-not-allowed"
+            value={selectedCategoryName}
+            readonly
+        />
+    </div>
+
+    <div>
         <label class="block text-sm mb-1 font-medium">Item Name</label>
         <input
             class="w-full px-3 py-2 border rounded"
@@ -77,21 +99,6 @@
             {#each clients as client}
                 <option value={+client.client_id}>
                     {client.client_name}
-                </option>
-            {/each}
-        </select>
-    </div>
-
-    <div>
-        <label class="block text-sm mb-1 font-medium">Category Name</label>
-        <select
-            class="w-full px-3 py-2 border rounded"
-            bind:value={formData.category_id}
-        >
-            <option value="" disabled>Pilih Category</option>
-            {#each categories as category}
-                <option value={+category.category_id}>
-                    {category.category_name}
                 </option>
             {/each}
         </select>
