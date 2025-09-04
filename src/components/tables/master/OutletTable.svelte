@@ -9,11 +9,7 @@
     }
 
     function handleDelete(outlet) {
-        if (
-            confirm(`Are you sure you want to delete "${outlet.outlet_name}"?`)
-        ) {
-            dispatch("delete", { id: outlet.outlet_id });
-        }
+        dispatch("delete", { id: outlet.outlet_id });
     }
 </script>
 

@@ -23,6 +23,16 @@
         customer_id: customerId,
     };
 
+    let errors = {};
+    let isSubmitted = false;
+
+    // 🚀 computed valid form (untuk enable/disable tombol)
+    $: isFormValid =
+        formData.product_name.trim() &&
+        formData.client_id &&
+        formData.category_id &&
+        formData.end_date;
+
     $: if (selectedItem && selectedItem.product_id !== formData.product_id) {
         formData = {
             product_id: selectedItem.product_id,
@@ -45,7 +55,28 @@
         };
     }
 
+    function validateForm() {
+        let newErrors = {};
+        if (!formData.product_name.trim()) {
+            newErrors.product_name = "Item Name is required";
+        }
+        if (!formData.client_id) {
+            newErrors.client_id = "Client is required";
+        }
+        if (!formData.category_id) {
+            newErrors.category_id = "Category is required";
+        }
+        if (!formData.end_date) {
+            newErrors.end_date = "End Date is required";
+        }
+        return newErrors;
+    }
+
     function handleSubmit() {
+        isSubmitted = true;
+        errors = validateForm();
+
+        if (Object.keys(errors).length > 0) return;
         dispatch("submit", formData);
     }
 
@@ -54,41 +85,43 @@
     }
 
     onMount(() => {
-        const date = new Date();
-        date.setDate(date.getDate() + 30);
-
-        formData.end_date = date.toISOString().split("T")[0];
+        if (!formData.end_date) {
+            const date = new Date();
+            date.setDate(date.getDate() + 30);
+            formData.end_date = date.toISOString().split("T")[0];
+        }
     });
 </script>
 
 <div class="space-y-4">
+    <!-- Category (readonly) -->
     <div>
         <label class="block text-sm mb-1 font-medium">Category Name</label>
-
-        <!-- Hidden input untuk dikirim (ID) -->
-        <input
-            type="hidden"
-            name="product_id"
-            bind:value={formData.category_id}
-        />
-
-        <!-- Read-only input untuk ditampilkan ke user (Name) -->
+        <input type="hidden" bind:value={formData.category_id} />
         <input
             type="text"
             class="w-full px-3 py-2 border rounded bg-gray-100 cursor-not-allowed"
             value={selectedCategoryName}
             readonly
         />
+        {#if isSubmitted && errors.category_id}
+            <p class="text-red-500 text-sm mt-1">{errors.category_id}</p>
+        {/if}
     </div>
 
+    <!-- Item Name -->
     <div>
         <label class="block text-sm mb-1 font-medium">Item Name</label>
         <input
             class="w-full px-3 py-2 border rounded"
             bind:value={formData.product_name}
         />
+        {#if isSubmitted && errors.product_name}
+            <p class="text-red-500 text-sm mt-1">{errors.product_name}</p>
+        {/if}
     </div>
 
+    <!-- Client -->
     <div>
         <label class="block text-sm mb-1 font-medium">Client Name</label>
         <select
@@ -102,8 +135,12 @@
                 </option>
             {/each}
         </select>
+        {#if isSubmitted && errors.client_id}
+            <p class="text-red-500 text-sm mt-1">{errors.client_id}</p>
+        {/if}
     </div>
 
+    <!-- End Date -->
     <div>
         <label class="block text-sm mb-1 font-medium">End Date</label>
         <input
@@ -111,6 +148,9 @@
             type="date"
             bind:value={formData.end_date}
         />
+        {#if isSubmitted && errors.end_date}
+            <p class="text-red-500 text-sm mt-1">{errors.end_date}</p>
+        {/if}
     </div>
 
     <!-- Action Buttons -->
@@ -118,16 +158,17 @@
         <button
             on:click={handleClose}
             type="button"
-            class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+            class="px-4 py-2 rounded border bg-gray-100 hover:bg-gray-200"
         >
             Cancel
         </button>
         <button
             on:click={handleSubmit}
             type="button"
-            class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+            disabled={!isFormValid}
+            class="px-4 py-2 rounded bg-[#5E6B75] text-white hover:bg-[#4c5962] disabled:opacity-50 disabled:cursor-not-allowed"
         >
-            {selectedItem ? "Update" : "Add"}
+            {selectedItem ? "Save" : "Add"}
         </button>
     </div>
 </div>

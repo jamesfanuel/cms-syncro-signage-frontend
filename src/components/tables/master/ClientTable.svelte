@@ -9,11 +9,7 @@
     }
 
     function handleDelete(client) {
-        if (
-            confirm(`Are you sure you want to delete "${client.client_name}"?`)
-        ) {
-            dispatch("delete", { id: client.client_id });
-        }
+        dispatch("delete", { id: client.client_id });
     }
 
     // Pagination state

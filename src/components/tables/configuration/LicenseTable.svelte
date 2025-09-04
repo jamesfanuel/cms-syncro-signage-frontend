@@ -19,13 +19,7 @@
     }
 
     function handleDelete(license) {
-        if (
-            confirm(
-                `Are you sure you want to delete "${license.license_code}"?`,
-            )
-        ) {
-            dispatch("delete", { id: license.license_id });
-        }
+        dispatch("delete", { id: license.license_id });
     }
 </script>
 

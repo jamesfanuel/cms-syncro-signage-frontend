@@ -15,9 +15,10 @@
         outlet_id: null,
         screen_id: null,
         expired_at: "",
-        created_by: currentUser,
+        created_by: currentUser || "unknown",
     };
 
+    // Update formData saat edit license
     $: if (
         selectedLicense &&
         selectedLicense.license_id !== formData.license_id
@@ -42,8 +43,17 @@
         };
     }
 
+    // ✅ validasi
+    $: isFormValid =
+        formData.customer_id &&
+        formData.outlet_id &&
+        formData.screen_id &&
+        formData.expired_at.trim() !== "";
+
     function handleSubmit() {
-        dispatch("submit", formData);
+        if (isFormValid) {
+            dispatch("submit", formData);
+        }
     }
 
     function handleClose() {
@@ -63,6 +73,7 @@
         dispatch("outletSelected", outletId);
     }
 
+    // Auto pilih outlet kalau cuma ada satu
     $: if (
         formData.customer_id &&
         outlets.length === 1 &&
@@ -92,9 +103,9 @@
 
     <!-- Customer Select -->
     <div class="mb-4">
-        <label class="block text-gray-600 text-sm font-medium mb-1"
-            >Customer Name</label
-        >
+        <label class="block text-gray-600 text-sm font-medium mb-1">
+            Customer Name
+        </label>
         <select
             class="w-full px-3 py-2 border rounded"
             on:change={handleCustomerChange}
@@ -102,18 +113,18 @@
         >
             <option value="" disabled hidden>Pilih Customer</option>
             {#each customers as customer}
-                <option value={+customer.customer_id}
-                    >{customer.customer_name}</option
-                >
+                <option value={+customer.customer_id}>
+                    {customer.customer_name}
+                </option>
             {/each}
         </select>
     </div>
 
-    <!-- Outlet Select (disabled if no customer) -->
+    <!-- Outlet Select -->
     <div class="mb-4">
-        <label class="block text-gray-600 text-sm font-medium mb-1"
-            >Outlet Name</label
-        >
+        <label class="block text-gray-600 text-sm font-medium mb-1">
+            Outlet Name
+        </label>
         <select
             class="w-full px-3 py-2 border rounded"
             on:change={handleOutletChange}
@@ -127,11 +138,11 @@
         </select>
     </div>
 
-    <!-- Screen Select (disabled if no outlet) -->
+    <!-- Screen Select -->
     <div class="mb-4">
-        <label class="block text-gray-600 text-sm font-medium mb-1"
-            >Screen Name</label
-        >
+        <label class="block text-gray-600 text-sm font-medium mb-1">
+            Screen Name
+        </label>
         <select
             class="w-full px-3 py-2 border rounded"
             on:change={(e) => (formData.screen_id = parseInt(e.target.value))}
@@ -145,10 +156,11 @@
         </select>
     </div>
 
+    <!-- Expired -->
     <div class="mb-4">
-        <label class="block text-gray-600 text-sm font-medium mb-1"
-            >Expired At</label
-        >
+        <label class="block text-gray-600 text-sm font-medium mb-1">
+            Expired At
+        </label>
         <input
             class="w-full px-3 py-2 border rounded"
             type="date"
@@ -156,6 +168,7 @@
         />
     </div>
 
+    <!-- Actions -->
     <div class="flex justify-end gap-2">
         <button
             on:click={handleClose}
@@ -167,7 +180,11 @@
         <button
             on:click={handleSubmit}
             type="button"
-            class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+            class="px-4 py-2 rounded text-white
+                   {isFormValid
+                ? 'bg-blue-600 hover:bg-blue-700'
+                : 'bg-gray-400 cursor-not-allowed'}"
+            disabled={!isFormValid}
         >
             {selectedLicense ? "Update" : "Add"}
         </button>

@@ -9,17 +9,20 @@
 
     let formData = {
         client_id: null,
-        client_code: "",
         client_name: "",
         customer_id: customerId,
         created_by: currentUser,
     };
 
+    let error = "";
+
+    // Reactive: validasi form
+    $: isFormValid = formData.client_name.trim();
+
     // Reaktif terhadap perubahan selectedClient
     $: if (selectedClient && selectedClient.client_id !== formData.client_id) {
         formData = {
             client_id: selectedClient.client_id,
-            client_code: selectedClient.client_code,
             client_name: selectedClient.client_name,
             customer_id: parseInt(selectedClient.customer_id) || null,
             created_by: selectedClient.created_by || currentUser,
@@ -27,7 +30,6 @@
     } else if (!selectedClient && formData.client_id !== null) {
         formData = {
             client_id: null,
-            client_code: "",
             client_name: "",
             customer_id: customerId,
             created_by: currentUser,
@@ -35,6 +37,11 @@
     }
 
     function handleSubmit() {
+        if (!isFormValid) {
+            error = "Client name is required";
+            return;
+        }
+        error = "";
         dispatch("submit", formData);
     }
 
@@ -51,16 +58,22 @@
             bind:value={formData.client_name}
             class="w-full border px-3 py-2 rounded"
         />
+        {#if error}
+            <p class="text-red-500 text-sm mt-1">{error}</p>
+        {/if}
     </div>
 
     <div class="flex justify-end gap-2 mt-4">
         <button
+            type="button"
             class="px-4 py-2 rounded border border-gray-400"
             on:click={handleClose}>Cancel</button
         >
         <button
-            class="px-4 py-2 rounded bg-[#5E6B75] text-white hover:bg-[#4c5962]"
+            type="button"
+            class="px-4 py-2 rounded bg-[#5E6B75] text-white hover:bg-[#4c5962] disabled:opacity-50 disabled:cursor-not-allowed"
             on:click={handleSubmit}
+            disabled={!isFormValid}
         >
             {formData.client_id ? "Save" : "Add"}
         </button>

@@ -11,13 +11,7 @@
     }
 
     function handleDelete(productCategory) {
-        if (
-            confirm(
-                `Are you sure you want to delete "${productCategory.category_name}"?`,
-            )
-        ) {
-            dispatch("delete", { id: productCategory.category_id });
-        }
+        dispatch("delete", { id: productCategory.category_id });
     }
 
     let currentPage = 1;

@@ -17,9 +17,7 @@
     }
 
     function handleDelete(user) {
-        if (confirm(`Are you sure you want to delete "${user.user_name}"?`)) {
-            dispatch("delete", { id: user.user_id });
-        }
+        dispatch("delete", { id: user.user_id });
     }
 </script>
 

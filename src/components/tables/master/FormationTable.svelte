@@ -9,11 +9,7 @@
     }
 
     function handleDelete(formation) {
-        if (
-            confirm(`Are you sure you want to delete "${formation.screen_name}"?`)
-        ) {
-            dispatch("delete", { id: formation.screen_id });
-        }
+        dispatch("delete", { id: formation.screen_id });
     }
 </script>
 
@@ -22,9 +18,6 @@
 >
     <thead class="bg-gray-100 text-gray-700">
         <tr>
-            <th class="px-4 py-2 text-left">
-                <i class="fas fa-handshake mr-1 text-[#5E6B75]"></i> Outlet Name
-            </th>
             <th class="px-4 py-2 text-left">
                 <i class="fas fa-handshake mr-1 text-[#5E6B75]"></i> Screen Name
             </th>
@@ -51,7 +44,6 @@
             <tr
                 class="hover:bg-gray-50 border-t transition duration-150 ease-in-out"
             >
-                <td class="px-4 py-2">{formation.outlet_name}</td>
                 <td class="px-4 py-2">{formation.screen_name}</td>
                 <td class="px-4 py-2">{formation.screen_description}</td>
                 <td class="px-4 py-2">{formation.screen_function}</td>

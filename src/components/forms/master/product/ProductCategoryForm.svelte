@@ -8,6 +8,7 @@
     const customerId = localStorage.getItem("customer_id") || "unknown";
 
     let formData = {
+        category_id: null,
         category_name: "",
         created_by: currentUser,
         customer_id: customerId,
@@ -33,7 +34,11 @@
         };
     }
 
+    // Validasi: semua field wajib terisi
+    $: isFormValid = formData.category_name.trim().length > 0;
+
     function handleSubmit() {
+        if (!isFormValid) return; // cegah submit kalau belum valid
         dispatch("submit", formData);
     }
 
@@ -49,17 +54,21 @@
             type="text"
             bind:value={formData.category_name}
             class="w-full border px-3 py-2 rounded"
+            placeholder="Enter category name"
         />
     </div>
 
     <div class="flex justify-end gap-2 mt-4">
         <button
             class="px-4 py-2 rounded border border-gray-400"
-            on:click={handleClose}>Cancel</button
+            on:click={handleClose}
         >
+            Cancel
+        </button>
         <button
-            class="px-4 py-2 rounded bg-[#5E6B75] text-white hover:bg-[#4c5962]"
+            class="px-4 py-2 rounded bg-[#5E6B75] text-white hover:bg-[#4c5962] disabled:opacity-50 disabled:cursor-not-allowed"
             on:click={handleSubmit}
+            disabled={!isFormValid}
         >
             {formData.category_id ? "Save" : "Add"}
         </button>

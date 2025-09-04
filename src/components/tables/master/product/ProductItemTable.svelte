@@ -9,13 +9,7 @@
     }
 
     function handleDelete(productItem) {
-        if (
-            confirm(
-                `Are you sure you want to delete "${productItem.product_name}"?`,
-            )
-        ) {
-            dispatch("delete", { id: productItem.product_id });
-        }
+        dispatch("delete", { id: productItem.product_id });
     }
 </script>
 

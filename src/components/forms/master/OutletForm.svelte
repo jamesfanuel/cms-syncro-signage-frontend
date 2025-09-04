@@ -14,6 +14,11 @@
         created_by: currentUser,
     };
 
+    let errorMessage = "";
+
+    // reactive check validasi
+    $: isFormValid = formData.outlet_name.trim();
+
     // Reaktif terhadap perubahan selectedOutlet
     $: if (selectedOutlet && selectedOutlet.outlet_id !== formData.outlet_id) {
         formData = {
@@ -32,6 +37,11 @@
     }
 
     function handleSubmit() {
+        if (!isFormValid) {
+            errorMessage = "Outlet Name wajib diisi.";
+            return;
+        }
+        errorMessage = "";
         dispatch("submit", formData);
     }
 
@@ -48,6 +58,9 @@
             bind:value={formData.outlet_name}
             class="w-full border px-3 py-2 rounded"
         />
+        {#if errorMessage}
+            <p class="text-red-500 text-sm mt-1">{errorMessage}</p>
+        {/if}
     </div>
 
     <div class="flex justify-end gap-2 mt-4">
@@ -56,8 +69,9 @@
             on:click={handleClose}>Cancel</button
         >
         <button
-            class="px-4 py-2 rounded bg-[#5E6B75] text-white hover:bg-[#4c5962]"
+            class="px-4 py-2 rounded bg-[#5E6B75] text-white hover:bg-[#4c5962] disabled:opacity-50 disabled:cursor-not-allowed"
             on:click={handleSubmit}
+            disabled={!isFormValid}
         >
             {formData.outlet_id ? "Save" : "Add"}
         </button>

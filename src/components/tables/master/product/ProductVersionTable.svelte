@@ -13,13 +13,7 @@
     }
 
     function handleDelete(productVersion) {
-        if (
-            confirm(
-                `Are you sure you want to delete "${productVersion.version_name}"?`,
-            )
-        ) {
-            dispatch("delete", { id: productVersion.version_id });
-        }
+        dispatch("delete", { id: productVersion.version_id });
     }
 
     function handleUpload(productVersion) {

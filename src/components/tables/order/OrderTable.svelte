@@ -1,8 +1,8 @@
 <script>
     import { Building2, CalendarDays, MonitorPlay } from "lucide-svelte";
-    import { createEventDispatcher } from "svelte";
+    import { createEventDispatcher, onMount } from "svelte";
     export let orders = [];
-    export let onReload;
+    export let level;
 
     import { deleteOrderItem } from "../../../../usecases/order/order.js";
 
@@ -20,9 +20,7 @@
     }
 
     function handleDelete(order) {
-        if (confirm(`Are you sure you want to delete "${order.order_name}"?`)) {
-            dispatch("delete", { id: order.order_id });
-        }
+        dispatch("delete", { id: order.order_id });
     }
 
     async function handleItemDelete(orderItemId) {
@@ -50,6 +48,11 @@
         showItemModal = false;
         selectedItems = [];
     }
+
+    let showTimeFields = false;
+    onMount(() => {
+        showTimeFields = level > 1;
+    });
 </script>
 
 <!-- 🧾 Table Orders -->
@@ -61,6 +64,11 @@
             <th class="px-4 py-2 text-left">📣 Campaign</th>
             <th class="px-4 py-2 text-left">🧾 Order</th>
             <th class="px-4 py-2 text-left">⏱ Duration</th>
+            {#if showTimeFields}
+                <th class="px-4 py-2 text-left">⏱ Scheduled</th>
+                <th class="px-4 py-2 text-left">⏰ Time Start</th>
+                <th class="px-4 py-2 text-left">⏰ Time Stop</th>
+            {/if}
             <th class="px-4 py-2 text-left">👤 Created By</th>
             <th class="px-4 py-2 text-left">📅 Created At</th>
             <th class="px-4 py-2 text-left">🎯 Total Items</th>
@@ -77,6 +85,13 @@
                 <td class="px-4 py-2">{order.campaign_name}</td>
                 <td class="px-4 py-2">{order.order_name}</td>
                 <td class="px-4 py-2">{order.duration}</td>
+                {#if showTimeFields}
+                    <td class="px-4 py-2"
+                        >{order.is_timed === 1 ? "YES" : "NO"}</td
+                    >
+                    <td class="px-4 py-2">{order.start_time || "-"}</td>
+                    <td class="px-4 py-2">{order.stop_time || "-"}</td>
+                {/if}
                 <td class="px-4 py-2">{order.created_by}</td>
                 <td class="px-4 py-2">{order.created_at}</td>
                 <td class="px-4 py-2">
@@ -121,7 +136,10 @@
             </tr>
         {:else}
             <tr>
-                <td colspan="7" class="text-center text-gray-500 p-4 text-sm">
+                <td
+                    colspan={showTimeFields ? 10 : 7}
+                    class="text-center text-gray-500 p-4 text-sm"
+                >
                     No data found.
                 </td>
             </tr>

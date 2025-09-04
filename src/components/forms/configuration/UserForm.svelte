@@ -1,8 +1,7 @@
 <script>
-    import { createEventDispatcher, onMount } from "svelte";
+    import { createEventDispatcher } from "svelte";
 
     export let selectedUser = null;
-
     const dispatch = createEventDispatcher();
 
     const currentUser = localStorage.getItem("user_name");
@@ -19,12 +18,13 @@
         created_by: currentUser || "unknown",
     };
 
+    // Isi data kalau edit user
     $: if (selectedUser && selectedUser.id !== formData.id) {
         formData = {
             id: selectedUser.id,
             user_name: selectedUser.user_name,
-            password: selectedUser.password,
-            customer_id: parseInt(selectedUser.customer_id) || null,
+            password: "", // kosongkan biar user bisa isi baru kalau mau
+            customer_id: parseInt(selectedUser.customer_id) || "",
             is_admin:
                 selectedUser.is_admin === true || selectedUser.is_admin === 1
                     ? "admin"
@@ -44,8 +44,17 @@
         };
     }
 
+    // ✅ validasi
+    $: isFormValid =
+        formData.user_name.trim() !== "" &&
+        formData.is_admin !== "" &&
+        (formData.is_admin === "admin" || formData.customer_id !== "") &&
+        formData.expired_at.trim() !== "";
+
     function handleSubmit() {
-        dispatch("submit", formData);
+        if (isFormValid) {
+            dispatch("submit", formData);
+        }
     }
 
     function handleClose() {
@@ -69,6 +78,20 @@
         />
     </div>
 
+    <!-- Password (opsional kalau edit) -->
+    {#if !selectedUser}
+        <div class="mb-4">
+            <label class="block text-gray-600 text-sm font-medium mb-1"
+                >Password</label
+            >
+            <input
+                class="w-full px-3 py-2 border rounded"
+                type="password"
+                bind:value={formData.password}
+            />
+        </div>
+    {/if}
+
     <!-- Role Dropdown -->
     <div class="mb-4">
         <label class="block text-gray-600 text-sm font-medium mb-1">Role</label>
@@ -76,13 +99,13 @@
             class="w-full px-3 py-2 border rounded"
             bind:value={formData.is_admin}
         >
-            <option value="" disabled>Pilih Role</option>
+            <option value="" disabled hidden>Pilih Role</option>
             <option value="admin">Admin</option>
             <option value="customer">Customer</option>
         </select>
     </div>
 
-    <!-- Conditional Dropdown: Customer Name -->
+    <!-- Customer dropdown kalau role = customer -->
     {#if formData.is_admin === "customer"}
         <div class="mb-4">
             <label class="block text-gray-600 text-sm font-medium mb-1"
@@ -90,10 +113,9 @@
             >
             <select
                 class="w-full px-3 py-2 border rounded"
-                on:change={(e) =>
-                    (formData.customer_id = parseInt(e.target.value))}
+                bind:value={formData.customer_id}
             >
-                <option value="" disabled>Pilih Customer</option>
+                <option value="" disabled hidden>Pilih Customer</option>
                 {#each customers as customer}
                     <option value={customer.customer_id}>
                         {customer.customer_name}
@@ -115,7 +137,7 @@
         />
     </div>
 
-    <!-- Action Buttons -->
+    <!-- Actions -->
     <div class="flex justify-end gap-2">
         <button
             on:click={handleClose}
@@ -127,7 +149,11 @@
         <button
             on:click={handleSubmit}
             type="button"
-            class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+            class="px-4 py-2 rounded text-white
+                   {isFormValid
+                ? 'bg-blue-600 hover:bg-blue-700'
+                : 'bg-gray-400 cursor-not-allowed'}"
+            disabled={!isFormValid}
         >
             {selectedUser ? "Update" : "Add"}
         </button>

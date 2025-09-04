@@ -32,6 +32,7 @@
     let isOpenItem = false;
     let selectedOrder = null;
     let selectedOrderItem = null;
+    let level = parseInt(localStorage.getItem("level") || "0");
 
     async function loadOrders() {
         const customerId = localStorage.getItem("customer_id");
@@ -204,6 +205,7 @@
     <div class="px-6">
         <OrderTable
             orders={filteredOrders || []}
+            {level}
             on:edit={(e) => openEditForm(e.detail)}
             on:delete={handleDelete}
             on:addItem={(e) => openAddItemForm(e.detail)}
@@ -219,6 +221,7 @@
             <OrderForm
                 {selectedOrder}
                 {campaigns}
+                {level}
                 on:submit={(e) => handleFormSubmit(e.detail)}
                 on:close={handleCloseForm}
             />

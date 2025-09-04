@@ -6,7 +6,7 @@
   import { onMount } from "svelte";
 
   import {
-    fetchFormations,
+    fetchFormationsByOutlet,
     createFormation,
     updateFormation,
     deleteFormation,
@@ -24,20 +24,14 @@
   let canAdd = false;
 
   $: if (selectedOutletId) {
-    loadFormations();
+    loadFormations(selectedOutletId);
     canAdd = true;
   } else {
     formations = []; // kosongkan jika belum pilih outlet
   }
 
-  async function loadFormations() {
-    const customerId = localStorage.getItem("customer_id");
-    if (!customerId) {
-      console.warn("customer_id not found in localStorage");
-      return;
-    }
-
-    formations = await fetchFormations(Number(customerId));
+  async function loadFormations(selectedOutletId) {
+    formations = await fetchFormationsByOutlet(Number(selectedOutletId));
 
     if (!searchText) {
       filteredFormations = formations;
@@ -88,7 +82,7 @@
 
     try {
       await deleteFormation(id);
-      await loadFormations();
+      await loadFormations(selectedOutletId);
     } catch (error) {
       console.error("Failed to delete formation:", error);
       alert("Failed to delete formation.");
@@ -101,7 +95,9 @@
     } else {
       await createFormation(data);
     }
-    await loadFormations();
+    if (selectedOutletId) {
+      await loadFormations(selectedOutletId); // pastikan refresh sesuai outlet yg dipilih
+    }
     isOpen = false;
   }
 
@@ -151,6 +147,7 @@
     >
       <FormationForm
         {selectedFormation}
+        {selectedOutletId}
         {outlets}
         on:submit={(e) => handleFormSubmit(e.detail)}
         on:close={handleCloseForm}

@@ -9,11 +9,7 @@
     }
 
     function handleDelete(campaign) {
-        if (
-            confirm(`Are you sure you want to delete "${campaign.campaign_name}"?`)
-        ) {
-            dispatch("delete", { id: campaign.campaign_id });
-        }
+        dispatch("delete", { id: campaign.campaign_id });
     }
 </script>
 
