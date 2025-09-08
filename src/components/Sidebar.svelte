@@ -47,12 +47,14 @@
     <h2 class="text-xl font-bold mb-6">{appName}</h2>
 
     <!-- Dashboard -->
-    <button
-      on:click={() => select("dashboard")}
-      class={`w-full text-left px-3 py-2 rounded hover:bg-gray-200 font-semibold ${isActive("dashboard")}`}
-    >
-      🏠 Dashboard
-    </button>
+    {#if role === "customer"}
+      <button
+        on:click={() => select("dashboard")}
+        class={`w-full text-left px-3 py-2 rounded hover:bg-gray-200 font-semibold ${isActive("dashboard")}`}
+      >
+        🏠 Dashboard
+      </button>
+    {/if}
 
     <!-- CUSTOMER SECTION (full access) -->
     {#if role === "customer"}

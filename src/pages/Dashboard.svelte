@@ -1,20 +1,18 @@
 <script>
     import { onMount } from "svelte";
+    import { fade, fly } from "svelte/transition";
     import Chart from "chart.js/auto";
     import ChartDataLabels from "chartjs-plugin-datalabels";
+    import {
+        fetchTotalScreen,
+        fetchTotalOrder,
+    } from "../../usecases/dashboard.js";
 
-    let chart;
-
-    const tvData = [
-        { outlet: "Outlet A", totalTVs: 10 },
-        { outlet: "Outlet B", totalTVs: 7 },
-        { outlet: "Outlet C", totalTVs: 12 },
-        { outlet: "Outlet D", totalTVs: 5 },
-    ];
-
-    const labels = tvData.map((d) => d.outlet);
-    const data = tvData.map((d) => d.totalTVs);
-    const totalTV = data.reduce((a, b) => a + b, 0);
+    let screenData = [];
+    let orderData = [];
+    let totalScreen = 0;
+    let totalOrder = 0;
+    let screenChart, orderChart;
 
     const backgroundColors = [
         "#FF6384",
@@ -27,106 +25,249 @@
         "#C9CBCF",
     ];
 
-    onMount(() => {
-        const ctx = document.getElementById("tvPieChart").getContext("2d");
+    async function loadData() {
+        const customerId = localStorage.getItem("customer_id");
+        if (!customerId) return;
 
-        chart = new Chart(ctx, {
+        screenData = await fetchTotalScreen(Number(customerId));
+        orderData = await fetchTotalOrder(Number(customerId));
+
+        totalScreen = screenData.reduce((a, b) => a + b.total_screen, 0);
+        totalOrder = orderData.reduce((a, b) => a + b.total, 0);
+
+        setupScreenChart();
+        setupOrderChart();
+    }
+
+    function setupScreenChart() {
+        if (!screenData || screenData.length === 0) return;
+        const labels = screenData.map((d) => d.outlet_name);
+        const data = screenData.map((d) => d.total_screen);
+
+        const ctx = document.getElementById("screenPieChart").getContext("2d");
+        if (screenChart) screenChart.destroy();
+
+        screenChart = new Chart(ctx, {
             type: "pie",
             data: {
                 labels,
                 datasets: [
                     {
-                        label: "Jumlah TV",
+                        label: "Jumlah Screen",
                         data,
                         backgroundColor: backgroundColors.slice(0, data.length),
+                        borderWidth: 2,
+                        borderColor: "#fff",
                     },
                 ],
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                animation: {
-                    animateRotate: true,
-                    animateScale: true,
-                    duration: 1200,
-                },
                 plugins: {
                     tooltip: {
                         callbacks: {
-                            label: function (context) {
+                            label: (context) => {
                                 const label = context.label || "";
                                 const value = context.raw || 0;
-                                const percent = (
-                                    (value / totalTV) *
-                                    100
-                                ).toFixed(1);
-                                return `${label}: ${value} TV (${percent}%)`;
+                                const percent =
+                                    totalScreen > 0
+                                        ? ((value / totalScreen) * 100).toFixed(
+                                              1,
+                                          )
+                                        : 0;
+                                return `${label}: ${value} Screen (${percent}%)`;
                             },
                         },
-                        backgroundColor: "#5E6B75",
-                        titleColor: "#fff",
-                        bodyColor: "#fff",
-                        cornerRadius: 6,
-                        padding: 10,
                     },
-                    legend: {
-                        display: false,
-                    },
+                    legend: { display: false },
                     datalabels: {
                         color: "#fff",
-                        font: {
-                            weight: "bold",
-                            size: 14,
-                        },
-                        formatter: (value) => {
-                            const percent = (value / totalTV) * 100;
-                            return percent.toFixed(1) + "%";
-                        },
+                        font: { weight: "bold", size: 14 },
+                        formatter: (value) =>
+                            totalScreen === 0
+                                ? "0%"
+                                : ((value / totalScreen) * 100).toFixed(1) +
+                                  "%",
                     },
                     title: {
                         display: true,
-                        text: "Distribusi TV per Outlet",
+                        text: "Distribusi Screen per Outlet",
                         color: "#5E6B75",
-                        font: {
-                            size: 18,
-                        },
+                        font: { size: 18, weight: "bold" },
                     },
                 },
             },
             plugins: [ChartDataLabels],
         });
+    }
+
+    function setupOrderChart() {
+        if (!orderData || orderData.length === 0) return;
+
+        // aggregate total order per outlet
+        const outletTotals = {};
+        orderData.forEach((d) => {
+            outletTotals[d.outlet_name] =
+                (outletTotals[d.outlet_name] || 0) + (d.total ?? 0);
+        });
+
+        const labels = Object.keys(outletTotals);
+        const data = Object.values(outletTotals);
+
+        const ctx = document.getElementById("orderPieChart").getContext("2d");
+        if (orderChart) orderChart.destroy();
+
+        orderChart = new Chart(ctx, {
+            type: "pie",
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: "Total Order",
+                        data,
+                        backgroundColor: backgroundColors.slice(0, data.length),
+                        borderWidth: 2,
+                        borderColor: "#fff",
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                const label = context.label || "";
+                                const value = context.raw || 0;
+                                const percent =
+                                    totalOrder > 0
+                                        ? ((value / totalOrder) * 100).toFixed(
+                                              1,
+                                          )
+                                        : 0;
+                                return `${label}: ${value} Order (${percent}%)`;
+                            },
+                        },
+                    },
+                    legend: { display: false },
+                    datalabels: {
+                        color: "#fff",
+                        font: { weight: "bold", size: 14 },
+                        formatter: (value) =>
+                            totalOrder === 0
+                                ? "0%"
+                                : ((value / totalOrder) * 100).toFixed(1) + "%",
+                    },
+                    title: {
+                        display: true,
+                        text: "Distribusi Order per Outlet",
+                        color: "#5E6B75",
+                        font: { size: 18, weight: "bold" },
+                    },
+                },
+            },
+            plugins: [ChartDataLabels],
+        });
+    }
+
+    // group orderData by outlet for breakdown
+    $: groupedOrders = (() => {
+        const groups = {};
+        orderData.forEach((item) => {
+            if (!groups[item.outlet_name]) groups[item.outlet_name] = [];
+            groups[item.outlet_name].push(item);
+        });
+        return groups;
+    })();
+
+    onMount(() => {
+        loadData();
     });
 </script>
 
-<section class="w-full px-6 py-10 bg-gradient-to-b from-gray-100 to-white">
-    <h2 class="text-xl font-bold text-[#5E6B75] mb-6">Dashboard</h2>
-    <div
-        class="bg-white shadow-lg rounded-xl p-6 flex flex-col md:flex-row gap-6"
-    >
-        <!-- Pie Chart -->
-        <div class="w-full md:w-1/2 h-80">
-            <canvas id="tvPieChart" class="w-full h-full"></canvas>
+<section
+    class="w-full px-6 py-10 bg-gradient-to-b from-gray-100 to-white"
+    transition:fly={{ y: 20, duration: 800 }}
+>
+    <h2 class="text-2xl font-bold text-[#5E6B75] mb-6" transition:fade>
+        📊 Dashboard
+    </h2>
+
+    <!-- Grid 2 kolom untuk chart -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Screen Chart -->
+        <div class="bg-white shadow-xl rounded-2xl p-6 h-96" transition:fade>
+            <canvas id="screenPieChart" class="w-full h-full"></canvas>
         </div>
 
-        <!-- Data Summary -->
-        <div class="w-full md:w-1/2 space-y-3">
-            <h3 class="text-md font-semibold text-[#5E6B75] mb-2">
-                Ringkasan Data:
+        <!-- Order Chart -->
+        <div class="bg-white shadow-xl rounded-2xl p-6 h-96" transition:fade>
+            <canvas id="orderPieChart" class="w-full h-full"></canvas>
+        </div>
+    </div>
+
+    <!-- Ringkasan Data -->
+    <div
+        class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8"
+        transition:fade={{ delay: 300, duration: 800 }}
+    >
+        <!-- Ringkasan Screen -->
+        <div class="bg-white shadow-lg rounded-xl p-4">
+            <h3 class="text-lg font-semibold text-[#5E6B75] mb-3">
+                Ringkasan Screen:
             </h3>
-            {#each tvData as item, i}
+            {#each screenData as item, i}
                 <div class="summary-item border border-gray-200">
                     <div class="flex items-center space-x-2">
                         <span
                             class="w-3 h-3 rounded-full"
                             style="background-color: {backgroundColors[i]}"
                         ></span>
-                        <span>{item.outlet}</span>
+                        <span class="font-medium">{item.outlet_name}</span>
                     </div>
                     <div class="text-gray-600 font-medium">
-                        {item.totalTVs} TV ({(
-                            (item.totalTVs / totalTV) *
-                            100
-                        ).toFixed(1)}%)
+                        {item.total_screen} Screen ({totalScreen > 0
+                            ? ((item.total_screen / totalScreen) * 100).toFixed(
+                                  1,
+                              )
+                            : 0}%)
+                    </div>
+                </div>
+            {/each}
+        </div>
+
+        <!-- Ringkasan Order grouped by outlet -->
+        <div class="bg-white shadow-lg rounded-xl p-4">
+            <h3 class="text-lg font-semibold text-[#5E6B75] mb-3">
+                Ringkasan Order (per Screen):
+            </h3>
+            {#each Object.entries(groupedOrders) as [outlet, screens], i}
+                <div class="mb-4">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <span
+                            class="w-3 h-3 rounded-full"
+                            style="background-color: {backgroundColors[
+                                i % backgroundColors.length
+                            ]}"
+                        ></span>
+                        <span class="font-semibold">{outlet}</span>
+                    </div>
+                    <div class="ml-4 space-y-1">
+                        {#each screens as s}
+                            <div class="summary-item border border-gray-200">
+                                <span>{s.screen_name}</span>
+                                <span class="text-gray-600 font-medium">
+                                    {s.total} Order ({totalOrder > 0
+                                        ? (
+                                              (s.total / totalOrder) *
+                                              100
+                                          ).toFixed(1)
+                                        : 0}%)
+                                </span>
+                            </div>
+                        {/each}
                     </div>
                 </div>
             {/each}
@@ -136,6 +277,6 @@
 
 <style>
     .summary-item {
-        @apply flex justify-between items-center py-2 px-4 rounded-lg text-sm shadow-sm bg-gray-50;
+        @apply flex justify-between items-center py-2 px-4 rounded-lg text-sm shadow-sm bg-gray-50 transition-all;
     }
 </style>

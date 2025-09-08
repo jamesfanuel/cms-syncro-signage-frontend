@@ -6,6 +6,10 @@ export const API_ENDPOINTS = {
     auth: {
         login: `${BASE_URL}/auth/login`,
     },
+    dashboard: {
+        screen: (customer_id) => `${BASE_URL}/customer/${customer_id}/dashboard/screen`,
+        order: (customer_id) => `${BASE_URL}/customer/${customer_id}/dashboard/order`,
+    },
     customer: {
         find: `${BASE_URL}/customer/get`,
         findById: (id) => `${BASE_URL}/customer/get/${id}`,

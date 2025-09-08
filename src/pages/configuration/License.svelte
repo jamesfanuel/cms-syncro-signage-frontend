@@ -35,9 +35,20 @@
         loadCustomers();
     }
 
-    function openEditForm(license) {
+    async function openEditForm(license) {
+        await loadCustomers(); // pastikan customer sudah ada
         selectedLicense = license;
         isOpen = true;
+
+        // auto load outlets sesuai customer lama
+        if (license.customer_id) {
+            outlets = await fetchOutlets(Number(license.customer_id));
+        }
+
+        // auto load screens sesuai outlet lama
+        if (license.outlet_id) {
+            screens = await fetchFormationsByOutlet(Number(license.outlet_id));
+        }
     }
 
     async function handleDelete({ detail: { id } }) {

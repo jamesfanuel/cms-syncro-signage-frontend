@@ -81,6 +81,16 @@
     ) {
         formData.outlet_id = outlets[0].outlet_id;
     }
+
+    $: if (selectedLicense && outlets.length === 0) {
+        // otomatis minta parent fetch outlets untuk customer lama
+        dispatch("customerSelected", selectedLicense.customer_id);
+    }
+
+    $: if (selectedLicense && screens.length === 0) {
+        // otomatis minta parent fetch screens untuk outlet lama
+        dispatch("outletSelected", selectedLicense.outlet_id);
+    }
 </script>
 
 <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">

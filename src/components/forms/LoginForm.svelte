@@ -90,7 +90,7 @@
             ></span>
             Logging in...
         {:else}
-            LOG IN
+            SIGN IN
         {/if}
     </button>
 </form>

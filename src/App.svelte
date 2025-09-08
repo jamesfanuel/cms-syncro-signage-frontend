@@ -21,7 +21,7 @@
   import User from "./pages/configuration/User.svelte";
   import License from "./pages/configuration/License.svelte";
 
-  let selectedMenu = "dashboard";
+  let selectedMenu = null; // awalnya null
   let isSidebarOpen = false;
   let appName = import.meta.env.VITE_APP_NAME;
 
@@ -36,6 +36,15 @@
 
   function handleLogout() {
     logout();
+  }
+
+  // cek role saat login
+  $: if ($auth.isLoggedIn && !selectedMenu) {
+    if ($auth.userRole === "customer") {
+      selectedMenu = "dashboard";
+    } else {
+      selectedMenu = "customer";
+    }
   }
 </script>
 
